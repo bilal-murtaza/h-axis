@@ -1,4 +1,4 @@
-# H-Axis
+# H & H Axis
 
 ![Project Screenshot](folder.jpg)
 
