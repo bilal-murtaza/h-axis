@@ -11,8 +11,7 @@
         "type-check": "vue-tsc --build --force",
         "lint": "eslint . --fix",
         "static": "vite build --config vite.static.config.mts",
-        "static:preview": "vite preview --config vite.static.config.mts",
-        "static:build": "./build-static.sh"
+        "static:preview": "vite preview --config vite.static.config.mts"
     },
     "dependencies": {
         "@fontsource/roboto": "5.2.6",
