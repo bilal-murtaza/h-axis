@@ -61,17 +61,7 @@ export default defineConfig({
     build: {
         outDir: 'dist',
         rollupOptions: {
-            input: {
-                main: path.resolve(__dirname, 'static.html'),
-            },
-            output: {
-                assetFileNames: (assetInfo) => {
-                    if (assetInfo.name === 'static.html') {
-                        return 'index.html'
-                    }
-                    return '[name]-[hash][extname]'
-                },
-            },
+            input: path.resolve(__dirname, 'index.html'),
         },
     },
     base: './', // Use relative paths for GitHub Pages
