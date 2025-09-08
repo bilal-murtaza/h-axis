@@ -6,13 +6,14 @@
 
 // Types
 import type { App } from 'vue'
+import VueApexCharts from 'vue3-apexcharts'
 import router from '../router'
 
 // Plugins
 import vuetify from './vuetify'
 
-export function registerPlugins (app: App) {
-    app
-        .use(vuetify)
-        .use(router)
+export function registerPlugins(app: App) {
+    app.use(vuetify)
+    app.use(router)
+    app.use(VueApexCharts)
 }

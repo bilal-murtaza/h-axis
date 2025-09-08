@@ -3,10 +3,18 @@
         <!-- Sidebar Navigation -->
         <v-navigation-drawer
             v-model="drawer"
+            app
             class="sidebar"
             permanent
-            width="270">
-            <div class="pa-4">
+            persistent
+            width="280">
+            <!-- Logo Section -->
+            <div
+                class="logo-section pa-4 d-flex align-center justify-center pb-2">
+                <img alt="H-Axis Logo" class="logo" src="@/assets/logo.png" />
+            </div>
+
+            <div class="pa-4 pt-2">
                 <v-list density="compact" nav>
                     <v-list-item
                         v-for="item in navigationItems"
@@ -30,6 +38,19 @@
         <!-- Main Content Area -->
         <v-main>
             <div class="main-content">
+                <!-- Header Section -->
+                <div class="welcome-section mb-8">
+                    <h1 class="welcome-title">Welcome, John Doe</h1>
+                    <div class="assets-section">
+                        <div class="assets-amount">
+                            $2.12B Assets Under Management
+                        </div>
+                        <div class="assets-subtitle">
+                            Up 5.2% from last quarter — 34 Active Deals
+                        </div>
+                    </div>
+                </div>
+
                 <slot />
             </div>
         </v-main>
@@ -45,7 +66,7 @@ const drawer = ref(true)
 
 const navigationItems = [
     { title: 'Dashboard', to: '/dashboard', icon: 'mdi-view-dashboard' },
-    { title: 'Deal Pipeline', to: '/deals', icon: 'mdi-pipeline' },
+    { title: 'Deal Pipeline', to: '/deals', icon: 'mdi-handshake' },
     { title: 'Capital Calls', to: '/capital-calls', icon: 'mdi-phone-outline' },
     {
         title: 'Earnings & Distributions',
@@ -55,7 +76,7 @@ const navigationItems = [
     { title: 'Investors', to: '/investors', icon: 'mdi-account-group' },
     { title: 'Documents', to: '/documents', icon: 'mdi-file-document' },
     { title: 'Reporting', to: '/reporting', icon: 'mdi-chart-bar' },
-    { title: 'Settings', to: '/settings', icon: 'mdi-cog' },
+    { title: 'Analyst Corner', to: '/analyst-corner', icon: 'mdi-chart-donut' },
 ]
 
 const isActiveRoute = (path: string) => {
@@ -87,7 +108,7 @@ const isActiveRoute = (path: string) => {
 }
 
 .sidebar :deep(.v-list-item__prepend) {
-    margin-right: 12px !important;
+    margin-right: -7px !important;
 }
 
 .sidebar :deep(.v-icon) {
@@ -103,5 +124,32 @@ const isActiveRoute = (path: string) => {
 .text-sm {
     font-size: 14px !important;
     font-weight: 500 !important;
+}
+
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.welcome-title {
+    font-size: 2rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.assets-section {
+    margin-top: 0.5rem;
+}
+
+.assets-amount {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #d4a574;
+    margin-bottom: 0.25rem;
+}
+
+.assets-subtitle {
+    font-size: 1rem;
+    color: #666;
 }
 </style>

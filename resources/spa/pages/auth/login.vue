@@ -3,7 +3,7 @@
         <div class="login-card">
             <!-- Logo Section -->
             <div class="logo-section">
-                <img alt="H&H Axis" class="logo" :src="logoImage" />
+                <img alt="H&H Axis" class="logo" :src="logoImage">
             </div>
 
             <!-- Form Section -->
@@ -98,9 +98,9 @@
 </template>
 
 <script lang="ts" setup>
-import logoImage from '@/assets/logo-lg.png'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import logoImage from '@/assets/logo-lg.png'
 
 const router = useRouter()
 
@@ -143,7 +143,7 @@ const login = async () => {
 
     try {
         // Simulate API call - replace with actual authentication logic
-        await new Promise((resolve) => setTimeout(resolve, 1500))
+        await new Promise(resolve => setTimeout(resolve, 1500))
 
         // For demo purposes, accept any email/password combination
         if (email.value && password.value) {

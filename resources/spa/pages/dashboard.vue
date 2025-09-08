@@ -1,19 +1,6 @@
 <template>
     <Layout>
         <div class="dashboard">
-            <!-- Header Section -->
-            <div class="welcome-section mb-8">
-                <h1 class="welcome-title">Welcome, John Doe</h1>
-                <div class="assets-section">
-                    <div class="assets-amount">
-                        $2.12B Assets Under Management
-                    </div>
-                    <div class="assets-subtitle">
-                        Up 5.2% from last quarter — 34 Active Deals
-                    </div>
-                </div>
-            </div>
-
             <!-- Key Metrics Cards -->
             <v-row class="mb-6">
                 <v-col cols="12" md="2">
@@ -261,33 +248,6 @@ import Layout from '@/components/ui/layout.vue'
 .dashboard {
     max-width: 1400px;
     margin: 0 auto;
-}
-
-.welcome-section {
-    margin-bottom: 2rem;
-}
-
-.welcome-title {
-    font-size: 2rem;
-    font-weight: 400;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.assets-section {
-    margin-top: 0.5rem;
-}
-
-.assets-amount {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: #d4a574;
-    margin-bottom: 0.25rem;
-}
-
-.assets-subtitle {
-    font-size: 1rem;
-    color: #666;
 }
 
 .metric-card {

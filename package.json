@@ -1,42 +1,47 @@
 {
-  "name": "h-&-h-axis",
-  "private": true,
-  "type": "module",
-  "version": "0.9.1",
-  "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix"
-  },
-  "dependencies": {
-    "@fontsource/roboto": "5.2.6",
-    "@mdi/font": "7.4.47",
-    "laravel-vite-plugin": "^2.0.0",
-    "vue": "^3.5.17",
-    "vuetify": "^3.9.1"
-  },
-  "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.9.0",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.30.1",
-    "eslint-config-vuetify": "^4.0.0",
-    "npm-run-all2": "^7.0.2",
-    "prettier": "^3.6.2",
-    "prettier-plugin-organize-imports": "^4.2.0",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "sass-embedded": "^1.89.2",
-    "typescript": "~5.8.3",
-    "unplugin-fonts": "^1.3.1",
-    "unplugin-vue-components": "^28.8.0",
-    "unplugin-vue-router": "^0.14.0",
-    "vite": "^6.3.5",
-    "vite-plugin-vuetify": "^2.1.1",
-    "vue-router": "^4.5.1",
-    "vue-tsc": "^3.0.1"
-  }
+    "name": "h-and-h-axis",
+    "private": true,
+    "type": "module",
+    "version": "0.9.1",
+    "scripts": {
+        "dev": "vite",
+        "build": "run-p type-check \"build-only {@}\" --",
+        "preview": "vite preview",
+        "build-only": "vite build",
+        "type-check": "vue-tsc --build --force",
+        "lint": "eslint . --fix",
+        "static": "vite build --config vite.static.config.mts",
+        "static:preview": "vite preview --config vite.static.config.mts",
+        "static:build": "./build-static.sh"
+    },
+    "dependencies": {
+        "@fontsource/roboto": "5.2.6",
+        "@mdi/font": "7.4.47",
+        "apexcharts": "^5.3.4",
+        "laravel-vite-plugin": "^2.0.0",
+        "vue": "^3.5.17",
+        "vue3-apexcharts": "^1.8.0",
+        "vuetify": "^3.9.1"
+    },
+    "devDependencies": {
+        "@tsconfig/node22": "^22.0.0",
+        "@types/node": "^22.9.0",
+        "@vitejs/plugin-vue": "^5.2.3",
+        "@vue/tsconfig": "^0.7.0",
+        "eslint": "^9.30.1",
+        "eslint-config-vuetify": "^4.0.0",
+        "npm-run-all2": "^7.0.2",
+        "prettier": "^3.6.2",
+        "prettier-plugin-organize-imports": "^4.2.0",
+        "prettier-plugin-tailwindcss": "^0.6.14",
+        "sass-embedded": "^1.89.2",
+        "typescript": "~5.8.3",
+        "unplugin-fonts": "^1.3.1",
+        "unplugin-vue-components": "^28.8.0",
+        "unplugin-vue-router": "^0.14.0",
+        "vite": "^6.3.5",
+        "vite-plugin-vuetify": "^2.1.1",
+        "vue-router": "^4.5.1",
+        "vue-tsc": "^3.0.1"
+    }
 }

@@ -11,5 +11,6 @@ export default vuetify({
         // Disable conflicting Vue indentation rules - let Prettier handle this
         'vue/script-indent': 'off',
         'vue/html-indent': 'off',
+        'vue/html-closing-bracket-newline': 'off',
     },
 })

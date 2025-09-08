@@ -1,6 +1,5 @@
-import path from 'node:path'
 import Vue from '@vitejs/plugin-vue'
-import laravel from 'laravel-vite-plugin'
+import path from 'node:path'
 import Fonts from 'unplugin-fonts/vite'
 // Plugins
 import Components from 'unplugin-vue-components/vite'
@@ -13,10 +12,6 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        laravel({
-            input: 'resources/spa/main.ts', // entry point inside resources
-            refresh: true,
-        }),
         VueRouter({
             dts: 'resources/spa/typed-router.d.ts',
             routesFolder: 'resources/spa/pages',
@@ -63,9 +58,15 @@ export default defineConfig({
         },
         extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
     },
-    server: {
-        port: 3000,
+    build: {
+        outDir: 'dist',
+        rollupOptions: {
+            input: {
+                main: path.resolve(__dirname, 'static.html'),
+            },
+        },
     },
+    base: './', // Use relative paths for GitHub Pages
     css: {
         preprocessorOptions: {
             sass: {
