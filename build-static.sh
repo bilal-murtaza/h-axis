@@ -40,4 +40,5 @@ echo "axis.easyapps.io" > dist/CNAME
 echo -e "${GREEN}✅ Static site built successfully!${NC}"
 echo -e "${GREEN}📁 Output directory: dist/${NC}"
 echo -e "${YELLOW}💡 You can preview it locally by running: pnpm static:preview${NC}"
-echo -e "${YELLOW}💡 To deploy to GitHub Pages, push the 'dist' folder to a 'gh-pages' branch${NC}"
+echo -e "${YELLOW}💡 To deploy to GitHub Pages, run: ./deploy-gh-pages.sh${NC}"
+echo -e "${YELLOW}💡 Or commit and push to master to trigger GitHub Actions deployment${NC}"
