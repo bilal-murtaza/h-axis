@@ -1,133 +1,125 @@
-# DNS Configuration for axis.easyapps.io
+# DNS Configuration for axis.easyapps.io with Cloudflare
 
-To fix the "InvalidDNSError" and properly configure your custom domain `axis.easyapps.io` for GitHub Pages, you need to set up the correct DNS records.
+To fix the HTTPS issue and properly configure your custom domain `axis.easyapps.io` for GitHub Pages with Cloudflare, you need to set up the correct DNS records and SSL settings.
 
-## Required DNS Records
+## Required Cloudflare Configuration
 
-You need to configure **one** of the following options in your DNS provider:
+### Step 1: DNS Records in Cloudflare
 
-### Option 1: CNAME Record (Recommended for subdomains)
+1. **Log into Cloudflare Dashboard**
+2. **Select your domain**: `easyapps.io`
+3. **Go to DNS > Records**
+4. **Add/Edit CNAME Record**:
 
 ```
 Type: CNAME
-Name: axis (or axis.easyapps.io)
-Value: bilal-murtaza.github.io
-TTL: 3600 (or Auto)
+Name: axis
+Target: bilal-murtaza.github.io
+Proxy status: DNS only (Gray cloud) ⚠️ IMPORTANT
+TTL: Auto
 ```
 
-### Option 2: A Records (For apex domains)
+**Critical**: The proxy status MUST be "DNS only" (gray cloud), NOT "Proxied" (orange cloud). GitHub Pages requires direct access to handle SSL certificates.
 
-If you want to use the apex domain (easyapps.io), use these A records:
+### Step 2: SSL/TLS Settings in Cloudflare
 
-```
-Type: A
-Name: @ (or leave blank for root domain)
-Value: 185.199.108.153
-TTL: 3600
+1. **Go to SSL/TLS > Overview**
+2. **Set SSL/TLS encryption mode to**: `Full` or `Full (strict)`
+3. **Go to SSL/TLS > Edge Certificates**
+4. **Ensure these settings**:
+    - Always Use HTTPS: `On`
+    - HTTP Strict Transport Security (HSTS): `Enabled`
+    - Minimum TLS Version: `1.2`
 
-Type: A
-Name: @ (or leave blank for root domain)
-Value: 185.199.109.153
-TTL: 3600
+### Step 3: Verify Cloudflare DNS Propagation
 
-Type: A
-Name: @ (or leave blank for root domain)
-Value: 185.199.110.153
-TTL: 3600
-
-Type: A
-Name: @ (or leave blank for root domain)
-Value: 185.199.111.153
-TTL: 3600
-```
-
-## Step-by-Step Setup
-
-### 1. Configure DNS Records
-
-Log into your DNS provider (where easyapps.io is registered) and add the CNAME record:
-
-- **Type**: CNAME
-- **Name**: axis
-- **Value**: bilal-murtaza.github.io
-- **TTL**: 3600 or Auto
-
-### 2. Verify DNS Propagation
-
-After adding the DNS records, verify they're working:
+After configuring DNS records, verify they're working:
 
 ```bash
-# Check CNAME record
+# Check CNAME record (should show bilal-murtaza.github.io)
 dig axis.easyapps.io CNAME
 
 # Check if it resolves to GitHub's IPs
 nslookup axis.easyapps.io
+
+# Verify it's not proxied through Cloudflare
+dig axis.easyapps.io A
+# Should return GitHub's IPs: 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
 ```
 
-### 3. Configure GitHub Pages
+### Step 4: Configure GitHub Pages
 
 1. Go to your repository: https://github.com/bilal-murtaza/h-axis
 2. Navigate to Settings → Pages
 3. Under "Custom domain", enter: `axis.easyapps.io`
-4. Check "Enforce HTTPS" (after DNS propagates)
+4. **Wait for DNS check to pass** (green checkmark)
+5. **Then** check "Enforce HTTPS"
 
-### 4. Deploy with CNAME
+### Step 5: Deploy with CNAME
 
-Build and deploy your site (the CNAME file will be automatically created):
+Build and deploy your site:
 
 ```bash
 ./build-static.sh
 ```
 
-## Troubleshooting
+## Cloudflare-Specific Troubleshooting
 
-### DNS Propagation Time
+### Common Cloudflare Issues with GitHub Pages
 
-- DNS changes can take up to 24-48 hours to fully propagate
-- Use online DNS checker tools to verify propagation
+1. **Orange Cloud (Proxied) - MOST COMMON ISSUE**
+    - ❌ Problem: CNAME record is proxied (orange cloud)
+    - ✅ Solution: Set to "DNS only" (gray cloud)
+    - Why: GitHub Pages needs direct access to generate SSL certificates
 
-### Common Issues
+2. **SSL/TLS Mode Issues**
+    - ❌ Problem: SSL mode set to "Flexible"
+    - ✅ Solution: Use "Full" or "Full (strict)"
+    - Why: Prevents SSL errors and mixed content issues
 
-1. **Subdomain vs Apex Domain**
-    - `axis.easyapps.io` = subdomain (use CNAME)
-    - `easyapps.io` = apex domain (use A records)
+3. **Page Rules Conflicts**
+    - Check if you have Page Rules that might interfere
+    - Ensure no redirects or cache rules conflict with GitHub Pages
 
-2. **TTL (Time To Live)**
-    - Lower TTL (300-3600) for faster updates during setup
-    - Higher TTL (86400) for stable production
-
-3. **DNS Provider Specific**
-    - Some providers require different formats
-    - Cloudflare: Use "axis" as name, not "axis.easyapps.io"
-    - Others: May require full domain name
-
-### Verification Commands
-
-```bash
-# Check if CNAME exists
-dig axis.easyapps.io CNAME
-
-# Check what IP it resolves to
-dig axis.easyapps.io A
-
-# Trace DNS resolution
-dig axis.easyapps.io +trace
-```
-
-### Expected Results
+### Expected Cloudflare DNS Results
 
 After correct configuration:
 
 ```bash
 $ dig axis.easyapps.io CNAME
-axis.easyapps.io.    3600    IN    CNAME    bilal-murtaza.github.io.
+axis.easyapps.io.    300    IN    CNAME    bilal-murtaza.github.io.
 
 $ dig axis.easyapps.io A
-axis.easyapps.io.    3600    IN    A    185.199.108.153
-axis.easyapps.io.    3600    IN    A    185.199.109.153
-axis.easyapps.io.    3600    IN    A    185.199.110.153
-axis.easyapps.io.    3600    IN    A    185.199.111.153
+axis.easyapps.io.    300    IN    A    185.199.108.153
+axis.easyapps.io.    300    IN    A    185.199.109.153
+axis.easyapps.io.    300    IN    A    185.199.110.153
+axis.easyapps.io.    300    IN    A    185.199.111.153
 ```
+
+### Cloudflare Dashboard Checklist
+
+- [ ] CNAME record: `axis` → `bilal-murtaza.github.io`
+- [ ] Proxy status: **DNS only** (gray cloud)
+- [ ] SSL/TLS mode: **Full** or **Full (strict)**
+- [ ] Always Use HTTPS: **On**
+- [ ] No conflicting Page Rules
+- [ ] No conflicting Firewall Rules
+
+## Quick Fix Summary
+
+**The most likely cause of your HTTPS issue is that your CNAME record in Cloudflare is set to "Proxied" (orange cloud). Here's the quick fix:**
+
+1. **Log into Cloudflare Dashboard**
+2. **Go to DNS > Records**
+3. **Find your CNAME record**: `axis` → `bilal-murtaza.github.io`
+4. **Click the orange cloud** to turn it **gray** (DNS only)
+5. **Wait 5-10 minutes** for propagation
+6. **Go back to GitHub Pages Settings** and try enabling HTTPS again
+
+## Why This Matters
+
+- **Orange Cloud (Proxied)**: Traffic goes through Cloudflare's servers, GitHub Pages can't generate SSL certificates
+- **Gray Cloud (DNS only)**: Direct connection to GitHub Pages, allows proper HTTPS setup
 
 ## Alternative: Use GitHub's Default Domain
 
