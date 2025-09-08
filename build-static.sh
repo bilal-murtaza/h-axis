@@ -34,8 +34,8 @@ rm -f dist/.htaccess 2>/dev/null || true
 # Create .nojekyll file for GitHub Pages (to handle assets with underscores)
 touch dist/.nojekyll
 
-# Create a CNAME file if you have a custom domain (uncomment and modify if needed)
-# echo "your-domain.com" > dist/CNAME
+# Create a CNAME file for custom domain
+echo "axis.easyapps.io" > dist/CNAME
 
 echo -e "${GREEN}✅ Static site built successfully!${NC}"
 echo -e "${GREEN}📁 Output directory: dist/${NC}"
