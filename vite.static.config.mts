@@ -64,6 +64,14 @@ export default defineConfig({
             input: {
                 main: path.resolve(__dirname, 'static.html'),
             },
+            output: {
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.name === 'static.html') {
+                        return 'index.html'
+                    }
+                    return '[name]-[hash][extname]'
+                },
+            },
         },
     },
     base: './', // Use relative paths for GitHub Pages
