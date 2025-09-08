@@ -7,71 +7,30 @@
             </div>
 
             <!-- Form Section -->
-            <v-form
-                ref="form"
-                v-model="valid"
-                class="login-form"
-                lazy-validation
-            >
+            <v-form ref="form" v-model="valid" class="login-form" lazy-validation>
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <v-text-field
-                        v-model="email"
-                        class="custom-input"
-                        hide-details="auto"
-                        placeholder="name@company.com"
-                        required
-                        :rules="emailRules"
-                        type="email"
-                        variant="outlined"
-                    />
+                    <v-text-field v-model="email" class="custom-input" hide-details="auto"
+                        placeholder="name@company.com" required :rules="emailRules" type="email" variant="outlined" />
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <v-text-field
-                        v-model="password"
-                        :append-inner-icon="
-                            showPassword ? 'mdi-eye' : 'mdi-eye-off'
-                        "
-                        class="custom-input"
-                        hide-details="auto"
-                        placeholder="••••••••"
-                        required
-                        :rules="passwordRules"
-                        :type="showPassword ? 'text' : 'password'"
-                        variant="outlined"
-                        @click:append-inner="showPassword = !showPassword"
-                    />
+                    <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                        " class="custom-input" hide-details="auto" placeholder="••••••••" required
+                        :rules="passwordRules" :type="showPassword ? 'text' : 'password'" variant="outlined"
+                        @click:append-inner="showPassword = !showPassword" />
                 </div>
 
                 <div class="form-options">
-                    <v-checkbox
-                        v-model="rememberMe"
-                        class="remember-checkbox"
-                        hide-details
-                        label="Remember me"
-                    />
-                    <v-btn
-                        class="forgot-password-link"
-                        size="small"
-                        variant="text"
-                        @click="forgotPassword"
-                    >
+                    <v-checkbox v-model="rememberMe" class="remember-checkbox" hide-details label="Remember me" />
+                    <v-btn class="forgot-password-link" size="small" variant="text" @click="forgotPassword">
                         Forgot password?
                     </v-btn>
                 </div>
 
-                <v-btn
-                    block
-                    class="sign-in-btn"
-                    color="#D4AF37"
-                    :disabled="!valid || loading"
-                    :loading="loading"
-                    size="large"
-                    variant="flat"
-                    @click="login"
-                >
+                <v-btn block class="sign-in-btn" color="#D4AF37" :disabled="!valid || loading" :loading="loading"
+                    size="large" variant="flat" @click="login">
                     Sign in
                 </v-btn>
             </v-form>
@@ -81,12 +40,7 @@
         <div class="footer">© 2025 H&H Axis - Private Fund Finance</div>
 
         <!-- Success/Error Snackbar -->
-        <v-snackbar
-            v-model="snackbar"
-            :color="snackbarColor"
-            :timeout="4000"
-            top
-        >
+        <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" top>
             {{ snackbarText }}
             <template #actions>
                 <v-btn color="white" variant="text" @click="snackbar = false">
@@ -98,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import logoImage from '@/assets/logo-lg.png'
 
@@ -182,6 +136,10 @@ const fillDemoCredentials = () => {
 // Expose for potential debugging
 defineExpose({
     fillDemoCredentials,
+})
+
+onMounted(() => {
+    fillDemoCredentials()
 })
 </script>
 
