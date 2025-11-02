@@ -3,34 +3,69 @@
         <div class="login-card">
             <!-- Logo Section -->
             <div class="logo-section">
-                <img alt="H&H Axis" class="logo" :src="logoImage">
+                <img alt="H&H Axis" class="logo" :src="logoImage" />
             </div>
 
             <!-- Form Section -->
-            <v-form ref="form" v-model="valid" class="login-form" lazy-validation>
+            <v-form
+                ref="form"
+                v-model="valid"
+                class="login-form"
+                lazy-validation>
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <v-text-field v-model="email" class="custom-input" hide-details="auto"
-                        placeholder="name@company.com" required :rules="emailRules" type="email" variant="outlined" />
+                    <v-text-field
+                        v-model="email"
+                        class="custom-input"
+                        hide-details="auto"
+                        placeholder="name@company.com"
+                        required
+                        :rules="emailRules"
+                        type="email"
+                        variant="outlined" />
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'
-                        " class="custom-input" hide-details="auto" placeholder="••••••••" required
-                        :rules="passwordRules" :type="showPassword ? 'text' : 'password'" variant="outlined"
+                    <v-text-field
+                        v-model="password"
+                        :append-inner-icon="
+                            showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                        "
+                        class="custom-input"
+                        hide-details="auto"
+                        placeholder="••••••••"
+                        required
+                        :rules="passwordRules"
+                        :type="showPassword ? 'text' : 'password'"
+                        variant="outlined"
                         @click:append-inner="showPassword = !showPassword" />
                 </div>
 
                 <div class="form-options">
-                    <v-checkbox v-model="rememberMe" class="remember-checkbox" hide-details label="Remember me" />
-                    <v-btn class="forgot-password-link" size="small" variant="text" @click="forgotPassword">
+                    <v-checkbox
+                        v-model="rememberMe"
+                        class="remember-checkbox"
+                        hide-details
+                        label="Remember me" />
+                    <v-btn
+                        class="forgot-password-link"
+                        size="small"
+                        variant="text"
+                        @click="forgotPassword">
                         Forgot password?
                     </v-btn>
                 </div>
 
-                <v-btn block class="sign-in-btn" color="#D4AF37" :disabled="!valid || loading" :loading="loading"
-                    size="large" variant="flat" @click="login">
+                <v-btn
+                    block
+                    class="sign-in-btn"
+                    color="#D4AF37"
+                    :disabled="!valid || loading"
+                    :loading="loading"
+                    size="large"
+                    variant="flat"
+                    @click="login">
                     Sign in
                 </v-btn>
             </v-form>
@@ -40,7 +75,11 @@
         <div class="footer">© 2025 H&H Axis - Private Fund Finance</div>
 
         <!-- Success/Error Snackbar -->
-        <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" top>
+        <v-snackbar
+            v-model="snackbar"
+            :color="snackbarColor"
+            :timeout="4000"
+            top>
             {{ snackbarText }}
             <template #actions>
                 <v-btn color="white" variant="text" @click="snackbar = false">
@@ -52,9 +91,9 @@
 </template>
 
 <script lang="ts" setup>
+import logoImage from '@/assets/logo-lg.png'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import logoImage from '@/assets/logo-lg.png'
 
 const router = useRouter()
 
@@ -97,7 +136,7 @@ const login = async () => {
 
     try {
         // Simulate API call - replace with actual authentication logic
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        await new Promise((resolve) => setTimeout(resolve, 1500))
 
         // For demo purposes, accept any email/password combination
         if (email.value && password.value) {
@@ -105,7 +144,7 @@ const login = async () => {
 
             // Redirect after successful login
             setTimeout(() => {
-                router.push('/dashboard')
+                router.push('/home')
             }, 1000)
         } else {
             throw new Error('Invalid credentials')
@@ -167,7 +206,7 @@ onMounted(() => {
     text-align: center;
     margin-bottom: 40px;
 
-    background: none #fff;
+    background: none #262626;
     border-radius: 10px 10px 0px 0px;
     padding: 25px 0px;
 }

@@ -15,5 +15,5 @@ import vuetify from './vuetify'
 export function registerPlugins(app: App) {
     app.use(vuetify)
     app.use(router)
-    app.use(VueApexCharts)
+    app.component('apexchart', VueApexCharts)
 }

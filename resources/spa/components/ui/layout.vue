@@ -11,10 +11,13 @@
             <!-- Logo Section -->
             <div
                 class="logo-section pa-4 d-flex align-center justify-center pb-2">
-                <img alt="H-Axis Logo" class="logo" src="@/assets/logo.png" />
+                <img
+                    alt="H-Axis Logo"
+                    class="logo"
+                    src="@/assets/logo-md.png" />
             </div>
 
-            <div class="pa-4 pt-2">
+            <div class="pa-4 mt-4">
                 <v-list density="compact" nav>
                     <v-list-item
                         v-for="item in navigationItems"
@@ -65,14 +68,9 @@ const route = useRoute()
 const drawer = ref(true)
 
 const navigationItems = [
-    { title: 'Dashboard', to: '/dashboard', icon: 'mdi-view-dashboard' },
+    { title: 'Home', to: '/home', icon: 'mdi-view-dashboard' },
     { title: 'Deal Pipeline', to: '/deals', icon: 'mdi-handshake' },
-    { title: 'Capital Calls', to: '/capital-calls', icon: 'mdi-phone-outline' },
-    {
-        title: 'Earnings & Distributions',
-        to: '/earnings',
-        icon: 'mdi-chart-line',
-    },
+    { title: 'Active Deals', to: '/active-deals', icon: 'mdi-briefcase' },
     { title: 'Investors', to: '/investors', icon: 'mdi-account-group' },
     { title: 'Documents', to: '/documents', icon: 'mdi-file-document' },
     { title: 'Reporting', to: '/reporting', icon: 'mdi-chart-bar' },

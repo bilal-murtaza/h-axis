@@ -81,11 +81,24 @@
                             <h3 class="stage-title">{{ stage.title }}</h3>
                         </div>
 
-                        <div class="stage-content">
+                        <div
+                            :class="[
+                                'stage-content',
+                                { 'drag-over': dragOverStage === stage.id },
+                            ]"
+                            @dragenter="onDragEnter($event, stage.id)"
+                            @dragleave="onDragLeave($event, stage.id)"
+                            @dragover.prevent
+                            @drop="onDrop($event, stage.id)">
                             <div
                                 v-for="deal in stage.deals"
                                 :key="deal.id"
-                                class="deal-card mb-4">
+                                class="deal-card mb-4"
+                                draggable="true"
+                                @dragend="onDragEnd"
+                                @dragstart="
+                                    onDragStart($event, deal, stage.id)
+                                ">
                                 <v-card class="deal-card-content" elevation="2">
                                     <v-card-text class="pa-4">
                                         <div
@@ -171,6 +184,11 @@ interface Stage {
     title: string
     deals: Deal[]
 }
+
+// State for drag and drop
+const draggedDeal = ref<Deal | null>(null)
+const draggedFromStage = ref<string | null>(null)
+const dragOverStage = ref<string | null>(null)
 
 const filters = ref({
     region: 'North America',
@@ -311,6 +329,80 @@ const getStageColor = (stage: string) => {
     }
     return colors[stage] || 'grey'
 }
+
+// Drag and drop handlers
+const onDragStart = (event: DragEvent, deal: Deal, stageId: string) => {
+    draggedDeal.value = deal
+    draggedFromStage.value = stageId
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move'
+        event.dataTransfer.dropEffect = 'move'
+    }
+    // Add dragging class to the element
+    if (event.target instanceof HTMLElement) {
+        event.target.classList.add('dragging')
+    }
+}
+
+const onDragEnd = (event: DragEvent) => {
+    // Remove dragging class
+    if (event.target instanceof HTMLElement) {
+        event.target.classList.remove('dragging')
+    }
+    draggedDeal.value = null
+    draggedFromStage.value = null
+    dragOverStage.value = null
+}
+
+const onDragEnter = (event: DragEvent, stageId: string) => {
+    event.preventDefault()
+    dragOverStage.value = stageId
+}
+
+const onDragLeave = (event: DragEvent, stageId: string) => {
+    // Only clear if we're actually leaving the stage container
+    const target = event.currentTarget as HTMLElement
+    const relatedTarget = event.relatedTarget as HTMLElement
+
+    if (!target.contains(relatedTarget) && dragOverStage.value === stageId) {
+        dragOverStage.value = null
+    }
+}
+
+const onDrop = (event: DragEvent, toStageId: string) => {
+    event.preventDefault()
+    dragOverStage.value = null
+
+    if (!draggedDeal.value || !draggedFromStage.value) return
+
+    const fromStageId = draggedFromStage.value
+
+    // Don't do anything if dropped in the same stage
+    if (fromStageId === toStageId) {
+        onDragEnd(event)
+        return
+    }
+
+    // Find the stages
+    const fromStage = stages.value.find((s) => s.id === fromStageId)
+    const toStage = stages.value.find((s) => s.id === toStageId)
+
+    if (!fromStage || !toStage) return
+
+    // Find and remove the deal from the source stage
+    const dealIndex = fromStage.deals.findIndex(
+        (d) => d.id === draggedDeal.value!.id,
+    )
+    if (dealIndex !== -1) {
+        const [movedDeal] = fromStage.deals.splice(dealIndex, 1)
+
+        // Update the deal's stage property to match the new stage title
+        movedDeal.stage = toStage.title
+
+        // Add the deal to the target stage
+        toStage.deals.push(movedDeal)
+    }
+}
 </script>
 
 <style scoped>
@@ -364,16 +456,38 @@ const getStageColor = (stage: string) => {
 
 .stage-content {
     min-height: 600px;
+    transition: all 0.15s ease;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 4px;
+    margin: -4px;
+}
+
+.stage-content.drag-over {
+    background-color: rgba(25, 118, 210, 0.08);
+    border: 3px solid #1976d2;
+    box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
+    outline: 2px dashed #1976d2;
+    outline-offset: 4px;
 }
 
 .deal-card {
     margin-bottom: 16px;
+    transition: opacity 0.2s ease;
+}
+
+.deal-card.dragging {
+    opacity: 0.5;
 }
 
 .deal-card-content {
     border-radius: 8px;
     transition: all 0.2s ease;
-    cursor: pointer;
+    cursor: grab;
+}
+
+.deal-card-content:active {
+    cursor: grabbing;
 }
 
 .deal-card-content:hover {
