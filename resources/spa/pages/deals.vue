@@ -9,7 +9,8 @@
                         <v-btn
                             color="primary"
                             prepend-icon="mdi-plus"
-                            variant="elevated">
+                            variant="elevated"
+                            @click="openAddDealDialog">
                             Add Deal
                         </v-btn>
                         <v-btn class="ml-2" variant="outlined">Kanban</v-btn>
@@ -162,6 +163,69 @@
                 </v-row>
             </div>
         </div>
+
+        <!-- Add Deal Dialog -->
+        <v-dialog v-model="showAddDealDialog" max-width="600px">
+            <v-card>
+                <v-card-title class="text-h5 pa-6">Add New Deal</v-card-title>
+
+                <v-card-text class="pa-6">
+                    <v-form ref="dealForm">
+                        <v-text-field
+                            v-model="newDeal.title"
+                            class="mb-4"
+                            label="Deal Title"
+                            placeholder="e.g., Borrower 1-4"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="newDeal.sector"
+                            class="mb-4"
+                            label="Sector/Region"
+                            placeholder="e.g., North America"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="newDeal.size"
+                            class="mb-4"
+                            label="Deal Size"
+                            placeholder="e.g., $85M"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="newDeal.yield"
+                            class="mb-4"
+                            label="Yield"
+                            placeholder="e.g., 9.2%"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="newDeal.expectedClose"
+                            label="Expected Close Date"
+                            placeholder="e.g., Nov 15"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+                    </v-form>
+                </v-card-text>
+
+                <v-card-actions class="pa-6 pt-0">
+                    <v-spacer />
+                    <v-btn
+                        color="grey"
+                        variant="text"
+                        @click="closeAddDealDialog">
+                        Cancel
+                    </v-btn>
+                    <v-btn color="primary" variant="elevated" @click="saveDeal">
+                        Save Deal
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </Layout>
 </template>
 
@@ -189,6 +253,22 @@ interface Stage {
 const draggedDeal = ref<Deal | null>(null)
 const draggedFromStage = ref<string | null>(null)
 const dragOverStage = ref<string | null>(null)
+
+// State for add deal dialog
+const showAddDealDialog = ref(false)
+const dealForm = ref<any>(null)
+const newDeal = ref({
+    title: '',
+    sector: '',
+    size: '',
+    yield: '',
+    expectedClose: '',
+})
+
+// Validation rules
+const rules = {
+    required: (value: string) => !!value || 'This field is required',
+}
 
 const filters = ref({
     region: 'North America',
@@ -328,6 +408,58 @@ const getStageColor = (stage: string) => {
         Stage: 'warning',
     }
     return colors[stage] || 'grey'
+}
+
+// Add Deal Dialog Functions
+const openAddDealDialog = () => {
+    showAddDealDialog.value = true
+}
+
+const closeAddDealDialog = () => {
+    showAddDealDialog.value = false
+    resetNewDeal()
+}
+
+const resetNewDeal = () => {
+    newDeal.value = {
+        title: '',
+        sector: '',
+        size: '',
+        yield: '',
+        expectedClose: '',
+    }
+}
+
+const saveDeal = async () => {
+    // Validate form
+    if (dealForm.value) {
+        const { valid } = await dealForm.value.validate()
+        if (!valid) return
+    }
+
+    // Generate unique ID
+    const timestamp = Date.now()
+    const dealId = `deal-${timestamp}`
+
+    // Create new deal object
+    const deal: Deal = {
+        id: dealId,
+        title: newDeal.value.title,
+        sector: newDeal.value.sector,
+        size: newDeal.value.size,
+        yield: newDeal.value.yield,
+        expectedClose: newDeal.value.expectedClose,
+        stage: 'Origination',
+    }
+
+    // Find the Origination stage and add the deal
+    const originationStage = stages.value.find((s) => s.id === 'origination')
+    if (originationStage) {
+        originationStage.deals.push(deal)
+    }
+
+    // Close dialog and reset form
+    closeAddDealDialog()
 }
 
 // Drag and drop handlers
