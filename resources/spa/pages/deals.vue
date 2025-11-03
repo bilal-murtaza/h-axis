@@ -94,16 +94,20 @@
                             <div
                                 v-for="deal in stage.deals"
                                 :key="deal.id"
-                                class="deal-card mb-4"
-                                draggable="true"
-                                @dragend="onDragEnd"
-                                @dragstart="
-                                    onDragStart($event, deal, stage.id)
-                                ">
+                                class="deal-card mb-4">
                                 <v-card class="deal-card-content" elevation="2">
                                     <v-card-text class="pa-4">
                                         <div
-                                            class="d-flex justify-space-between align-start mb-3">
+                                            class="d-flex justify-space-between align-start deal-title-section mb-3"
+                                            draggable="true"
+                                            @dragend="onDragEnd"
+                                            @dragstart="
+                                                onDragStart(
+                                                    $event,
+                                                    deal,
+                                                    stage.id,
+                                                )
+                                            ">
                                             <h4 class="deal-title">
                                                 {{ deal.title }}
                                             </h4>
@@ -117,7 +121,14 @@
                                             </v-chip>
                                         </div>
 
-                                        <div class="deal-details mb-3">
+                                        <div
+                                            class="deal-details clickable-area mb-3"
+                                            @click="
+                                                openEditDealDialog(
+                                                    deal,
+                                                    stage.id,
+                                                )
+                                            ">
                                             <div class="detail-row">
                                                 <span class="detail-label">
                                                     Sector:
@@ -145,7 +156,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="deal-footer">
+                                        <div
+                                            class="deal-footer clickable-area"
+                                            @click="
+                                                openEditDealDialog(
+                                                    deal,
+                                                    stage.id,
+                                                )
+                                            ">
                                             <div class="expected-close">
                                                 <span class="detail-label">
                                                     Expected Close:
@@ -226,6 +244,75 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <!-- Edit Deal Dialog -->
+        <v-dialog v-model="showEditDealDialog" max-width="600px">
+            <v-card>
+                <v-card-title class="text-h5 pa-6">Edit Deal</v-card-title>
+
+                <v-card-text class="pa-6">
+                    <v-form ref="editDealForm">
+                        <v-text-field
+                            v-model="editingDeal.title"
+                            class="mb-4"
+                            label="Deal Title"
+                            placeholder="e.g., Borrower 1-4"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="editingDeal.sector"
+                            class="mb-4"
+                            label="Sector/Region"
+                            placeholder="e.g., North America"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="editingDeal.size"
+                            class="mb-4"
+                            label="Deal Size"
+                            placeholder="e.g., $85M"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="editingDeal.yield"
+                            class="mb-4"
+                            label="Yield"
+                            placeholder="e.g., 9.2%"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+
+                        <v-text-field
+                            v-model="editingDeal.expectedClose"
+                            label="Expected Close Date"
+                            placeholder="e.g., Nov 15"
+                            :rules="[rules.required]"
+                            variant="outlined" />
+                    </v-form>
+                </v-card-text>
+
+                <v-card-actions class="pa-6 pt-0">
+                    <v-btn color="error" variant="text" @click="deleteDeal">
+                        Delete
+                    </v-btn>
+                    <v-spacer />
+                    <v-btn
+                        color="grey"
+                        variant="text"
+                        @click="closeEditDealDialog">
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="primary"
+                        variant="elevated"
+                        @click="updateDeal">
+                        Update Deal
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </Layout>
 </template>
 
@@ -264,6 +351,20 @@ const newDeal = ref({
     yield: '',
     expectedClose: '',
 })
+
+// State for edit deal dialog
+const showEditDealDialog = ref(false)
+const editDealForm = ref<any>(null)
+const editingDeal = ref({
+    id: '',
+    title: '',
+    sector: '',
+    size: '',
+    yield: '',
+    expectedClose: '',
+    stage: '',
+})
+const editingDealStageId = ref<string | null>(null)
 
 // Validation rules
 const rules = {
@@ -462,6 +563,92 @@ const saveDeal = async () => {
     closeAddDealDialog()
 }
 
+// Edit Deal Dialog Functions
+const openEditDealDialog = (deal: Deal, stageId: string) => {
+    editingDeal.value = {
+        id: deal.id,
+        title: deal.title,
+        sector: deal.sector,
+        size: deal.size,
+        yield: deal.yield,
+        expectedClose: deal.expectedClose,
+        stage: deal.stage,
+    }
+    editingDealStageId.value = stageId
+    showEditDealDialog.value = true
+}
+
+const closeEditDealDialog = () => {
+    showEditDealDialog.value = false
+    editingDealStageId.value = null
+    resetEditingDeal()
+}
+
+const resetEditingDeal = () => {
+    editingDeal.value = {
+        id: '',
+        title: '',
+        sector: '',
+        size: '',
+        yield: '',
+        expectedClose: '',
+        stage: '',
+    }
+}
+
+const updateDeal = async () => {
+    // Validate form
+    if (editDealForm.value) {
+        const { valid } = await editDealForm.value.validate()
+        if (!valid) return
+    }
+
+    if (!editingDealStageId.value) return
+
+    // Find the stage containing the deal
+    const stage = stages.value.find((s) => s.id === editingDealStageId.value)
+    if (!stage) return
+
+    // Find and update the deal
+    const dealIndex = stage.deals.findIndex(
+        (d) => d.id === editingDeal.value.id,
+    )
+    if (dealIndex !== -1) {
+        stage.deals[dealIndex] = {
+            id: editingDeal.value.id,
+            title: editingDeal.value.title,
+            sector: editingDeal.value.sector,
+            size: editingDeal.value.size,
+            yield: editingDeal.value.yield,
+            expectedClose: editingDeal.value.expectedClose,
+            stage: editingDeal.value.stage,
+        }
+    }
+
+    // Close dialog and reset form
+    closeEditDealDialog()
+}
+
+const deleteDeal = () => {
+    if (!editingDealStageId.value) return
+    if (!confirm('Are you sure you want to delete this deal?')) return
+
+    // Find the stage containing the deal
+    const stage = stages.value.find((s) => s.id === editingDealStageId.value)
+    if (!stage) return
+
+    // Find and remove the deal
+    const dealIndex = stage.deals.findIndex(
+        (d) => d.id === editingDeal.value.id,
+    )
+    if (dealIndex !== -1) {
+        stage.deals.splice(dealIndex, 1)
+    }
+
+    // Close dialog
+    closeEditDealDialog()
+}
+
 // Drag and drop handlers
 const onDragStart = (event: DragEvent, deal: Deal, stageId: string) => {
     draggedDeal.value = deal
@@ -615,16 +802,39 @@ const onDrop = (event: DragEvent, toStageId: string) => {
 .deal-card-content {
     border-radius: 8px;
     transition: all 0.2s ease;
-    cursor: grab;
-}
-
-.deal-card-content:active {
-    cursor: grabbing;
 }
 
 .deal-card-content:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.deal-title-section {
+    cursor: grab;
+    padding: 4px;
+    margin: -4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.deal-title-section:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.deal-title-section:active {
+    cursor: grabbing;
+}
+
+.clickable-area {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    padding: 4px;
+    margin: -4px;
+    border-radius: 4px;
+}
+
+.clickable-area:hover {
+    background-color: rgba(25, 118, 210, 0.08);
 }
 
 .deal-title {
