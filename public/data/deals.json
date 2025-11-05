@@ -1,0 +1,214 @@
+{
+    "deals": [
+        {
+            "id": 1,
+            "deal": "Precision",
+            "manager": "Applo Capital",
+            "sector": "Healthcare",
+            "country": "US",
+            "commitment": 3200000,
+            "close": "04/15/2023",
+            "maturity": "06/06/27",
+            "irr": 16.4,
+            "tvpi": 1.9,
+            "capitalCalls": [
+                {
+                    "id": 1,
+                    "date": "2023-05-15",
+                    "amount": 373000,
+                    "description": "Refund at Capital",
+                    "type": "Distribution",
+                    "status": "Completed"
+                },
+                {
+                    "id": 2,
+                    "date": "2023-06-20",
+                    "amount": 200000,
+                    "description": "Period 200",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "deal": "Continental",
+            "manager": "Sterling",
+            "sector": "Industrials",
+            "country": "Industrials",
+            "commitment": 1900000,
+            "close": "12/01/2022",
+            "maturity": "11/15/27",
+            "irr": 21.1,
+            "tvpi": 1.2,
+            "capitalCalls": [
+                {
+                    "id": 3,
+                    "date": "2022-12-15",
+                    "amount": 211000,
+                    "description": "Gross IBBR",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 4,
+                    "date": "2023-03-10",
+                    "amount": 175000,
+                    "description": "GRANT",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "deal": "Outend",
+            "manager": "Tivier Davids",
+            "sector": "Hartts",
+            "country": "CA",
+            "commitment": 2780000,
+            "close": "05/15/2023",
+            "maturity": "05/15/27",
+            "irr": 1.5,
+            "tvpi": 1.1,
+            "capitalCalls": [
+                {
+                    "id": 5,
+                    "date": "2023-06-01",
+                    "amount": 280000,
+                    "description": "Initial Capital Call",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 6,
+                    "date": "2023-09-15",
+                    "amount": 150000,
+                    "description": "Follow-on Investment",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "deal": "Rovergth",
+            "manager": "Pacific Co",
+            "sector": "Carretiam",
+            "country": "VA",
+            "commitment": 3280000,
+            "close": "05/15/2023",
+            "maturity": "09/15/27",
+            "irr": 1.1,
+            "tvpi": 1.2,
+            "capitalCalls": [
+                {
+                    "id": 7,
+                    "date": "2023-06-01",
+                    "amount": 328000,
+                    "description": "Initial Funding",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 8,
+                    "date": "2023-11-20",
+                    "amount": 220000,
+                    "description": "Quarterly Distribution",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "deal": "Portuner",
+            "manager": "Capital Chad",
+            "sector": "Corrmperno",
+            "country": "KC",
+            "commitment": 4200000,
+            "close": "03/15/2023",
+            "maturity": "05/12/27",
+            "irr": 1.47,
+            "tvpi": 1.3,
+            "capitalCalls": [
+                {
+                    "id": 9,
+                    "date": "2023-04-01",
+                    "amount": 420000,
+                    "description": "First Close Capital",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 10,
+                    "date": "2023-07-15",
+                    "amount": 315000,
+                    "description": "Interim Distribution",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "deal": "Pacific",
+            "manager": "Alberts Gow",
+            "sector": "Colipenas",
+            "country": "CO",
+            "commitment": 4000000,
+            "close": "05/15/2023",
+            "maturity": "02/15/27",
+            "irr": 1.8,
+            "tvpi": 1.5,
+            "capitalCalls": [
+                {
+                    "id": 11,
+                    "date": "2023-06-01",
+                    "amount": 400000,
+                    "description": "Capital Commitment",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 12,
+                    "date": "2023-10-30",
+                    "amount": 275000,
+                    "description": "Year-end Distribution",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "deal": "Steatinum",
+            "manager": "Apple Tech",
+            "sector": "Cooper",
+            "country": "US",
+            "commitment": 4300000,
+            "close": "02/19/2023",
+            "maturity": "04/15/27",
+            "irr": 1.8,
+            "tvpi": 1.2,
+            "capitalCalls": [
+                {
+                    "id": 13,
+                    "date": "2023-03-15",
+                    "amount": 430000,
+                    "description": "Series A Funding",
+                    "type": "Capital Call",
+                    "status": "Completed"
+                },
+                {
+                    "id": 14,
+                    "date": "2023-08-22",
+                    "amount": 185000,
+                    "description": "Dividend Payment",
+                    "type": "Distribution",
+                    "status": "Completed"
+                }
+            ]
+        }
+    ]
+}

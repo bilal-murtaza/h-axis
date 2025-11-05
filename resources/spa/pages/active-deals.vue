@@ -1,288 +1,146 @@
 <template>
     <Layout>
-        <div class="capital-calls">
+        <div class="closed-deals">
             <!-- Header Section -->
-            <div
-                class="page-header d-flex justify-space-between align-center mb-6">
-                <div>
-                    <h1 class="page-title">Active Deals</h1>
-                    <div class="date-range-info">
-                        <v-chip
-                            class="mr-2"
-                            color="grey-lighten-2"
-                            size="small">
-                            <v-icon size="16" start>mdi-calendar</v-icon>
-                            Date Range: Oct 1 – Dec 31
-                        </v-chip>
-                        <v-chip
-                            class="mr-2"
-                            color="orange-lighten-4"
-                            size="small">
-                            <v-icon size="16" start>mdi-folder</v-icon>
-                            Fund: Fund I
-                        </v-chip>
-                        <v-chip color="orange-lighten-4" size="small">
-                            <v-icon size="16" start>mdi-clock-outline</v-icon>
-                            Status: Pending
-                        </v-chip>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <v-btn
-                        class="mr-2"
-                        color="orange"
-                        variant="outlined"
-                        @click="generateNotice">
-                        <v-icon start>mdi-file-document-plus</v-icon>
-                        Generate Notice
-                    </v-btn>
-                    <v-btn
-                        class="mr-2"
-                        color="primary"
-                        variant="outlined"
-                        @click="exportPDF">
-                        <v-icon start>mdi-file-pdf-box</v-icon>
-                        Export PDF
-                    </v-btn>
-                    <v-btn
-                        color="success"
-                        variant="outlined"
-                        @click="exportExcel">
-                        <v-icon start>mdi-file-excel</v-icon>
-                        Export Excel
-                    </v-btn>
-                </div>
+            <div class="page-header mb-6">
+                <h1 class="page-title">Active Deals</h1>
             </div>
 
-            <v-row>
-                <!-- Capital Calls Table -->
-                <v-col cols="12" md="8">
-                    <v-card class="capital-calls-table">
-                        <v-card-title
-                            class="table-header d-flex justify-space-between align-center">
-                            <span class="text-h6 mt-n4">
-                                Capital Call Records
-                            </span>
-
-                            <v-btn
-                                class="mb-4"
-                                color="primary"
-                                @click="openAddDialog">
-                                <v-icon start>mdi-plus</v-icon>
-                                Add New Record
-                            </v-btn>
-                        </v-card-title>
-
-                        <v-tabs v-model="activeTab" class="px-4">
-                            <v-tab value="forecasted">
-                                Forecasted Activity
-                            </v-tab>
-                            <v-tab value="actual">Actual Activity</v-tab>
-                        </v-tabs>
-
-                        <v-tabs-window v-model="activeTab">
-                            <!-- Forecasted Activity Tab -->
-                            <v-window-item value="forecasted">
-                                <div class="pa-4">
-                                    <v-data-table
-                                        class="elevation-0"
-                                        :headers="headersWithActions"
-                                        hide-default-footer
-                                        :items="forecastedCalls"
-                                        :items-per-page="-1">
-                                        <template #item.date="{ item }">
-                                            <span class="date-cell">
-                                                {{ formatDate(item.date) }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.amount="{ item }">
-                                            <span class="amount-cell">
-                                                {{
-                                                    formatCurrency(item.amount)
-                                                }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.fund="{ item }">
-                                            <v-chip
-                                                :color="getFundColor(item.fund)"
-                                                size="small"
-                                                variant="outlined">
-                                                {{ item.fund }}
-                                            </v-chip>
-                                        </template>
-
-                                        <template
-                                            #item.investorGroup="{ item }">
-                                            <span class="investor-group-cell">
-                                                {{ item.investorGroup }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.status="{ item }">
-                                            <v-chip
-                                                :color="
-                                                    getStatusColor(item.status)
-                                                "
-                                                size="small"
-                                                :variant="
-                                                    item.status === 'Completed'
-                                                        ? 'flat'
-                                                        : 'outlined'
-                                                ">
-                                                {{ item.status }}
-                                            </v-chip>
-                                        </template>
-
-                                        <template #item.actions="{ item }">
-                                            <v-btn
-                                                icon="mdi-pencil"
-                                                size="small"
-                                                variant="text"
-                                                @click="openEditDialog(item)" />
-                                        </template>
-                                    </v-data-table>
-                                </div>
-                            </v-window-item>
-
-                            <!-- Actual Activity Tab -->
-                            <v-window-item value="actual">
-                                <div class="pa-4">
-                                    <v-data-table
-                                        class="elevation-0"
-                                        :headers="headersWithActions"
-                                        hide-default-footer
-                                        :items="actualCalls"
-                                        :items-per-page="-1">
-                                        <template #item.date="{ item }">
-                                            <span class="date-cell">
-                                                {{ formatDate(item.date) }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.amount="{ item }">
-                                            <span class="amount-cell">
-                                                {{
-                                                    formatCurrency(item.amount)
-                                                }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.fund="{ item }">
-                                            <v-chip
-                                                :color="getFundColor(item.fund)"
-                                                size="small"
-                                                variant="outlined">
-                                                {{ item.fund }}
-                                            </v-chip>
-                                        </template>
-
-                                        <template
-                                            #item.investorGroup="{ item }">
-                                            <span class="investor-group-cell">
-                                                {{ item.investorGroup }}
-                                            </span>
-                                        </template>
-
-                                        <template #item.status="{ item }">
-                                            <v-chip
-                                                :color="
-                                                    getStatusColor(item.status)
-                                                "
-                                                size="small"
-                                                :variant="
-                                                    item.status === 'Completed'
-                                                        ? 'flat'
-                                                        : 'outlined'
-                                                ">
-                                                {{ item.status }}
-                                            </v-chip>
-                                        </template>
-
-                                        <template #item.actions="{ item }">
-                                            <v-btn
-                                                icon="mdi-pencil"
-                                                size="small"
-                                                variant="text"
-                                                @click="openEditDialog(item)" />
-                                        </template>
-                                    </v-data-table>
-                                </div>
-                            </v-window-item>
-                        </v-tabs-window>
+            <v-row class="mb-6">
+                <!-- Summary Stats -->
+                <v-col cols="12" md="4">
+                    <v-card class="stats-card">
+                        <v-card-text>
+                            <div class="stats-label">Closed / Exited</div>
+                            <div class="stats-value">{{ totalDeals }}</div>
+                        </v-card-text>
                     </v-card>
                 </v-col>
-
-                <!-- Notice Preview Panel -->
                 <v-col cols="12" md="4">
-                    <v-card class="notice-preview">
-                        <v-card-title class="notice-header">
-                            <span class="text-h6">Notice Preview</span>
-                        </v-card-title>
-
-                        <v-card-text class="notice-content">
-                            <div class="notice-title mb-4">
-                                <h3>Capital Call Notice</h3>
+                    <v-card class="stats-card">
+                        <v-card-text>
+                            <div class="stats-label">Outstanding (AJM)</div>
+                            <div class="stats-value stats-currency">
+                                {{ formatLargeCurrency(totalOutstanding) }}
                             </div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-card class="stats-card">
+                        <v-card-text>
+                            <div class="stats-label">Defaults</div>
+                            <div class="stats-value">{{ totalDefaults }}</div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
 
-                            <div class="notice-details">
-                                <div class="detail-row mb-2">
-                                    <span class="detail-label">Fund:</span>
-                                    <span class="detail-value">Fund I</span>
-                                </div>
-                                <div class="detail-row mb-2">
-                                    <span class="detail-label">Investor:</span>
-                                    <span class="detail-value">Group A</span>
-                                </div>
-                                <div class="detail-row mb-2">
-                                    <span class="detail-label">
-                                        Amount Due:
-                                    </span>
-                                    <span class="detail-value font-weight-bold">
-                                        $5,000,000
-                                    </span>
-                                </div>
-                                <div class="detail-row mb-4">
-                                    <span class="detail-label">Due Date:</span>
-                                    <span class="detail-value">
-                                        Nov 15, 2025
-                                    </span>
-                                </div>
+            <!-- Filter Bar -->
+            <v-row class="mb-4">
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="statusFilter"
+                        density="compact"
+                        hide-details
+                        :items="['Closed', 'All sectors']"
+                        label="Status"
+                        variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="sectorFilter"
+                        density="compact"
+                        hide-details
+                        :items="[
+                            'All sectors',
+                            'Healthcare',
+                            'Tech',
+                            'Industrials',
+                        ]"
+                        label="Sector"
+                        variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="6">
+                    <v-text-field
+                        v-model="searchQuery"
+                        append-inner-icon="mdi-magnify"
+                        density="compact"
+                        hide-details
+                        placeholder="Search deals, manager, sector..."
+                        variant="outlined"
+                        @click:append-inner="handleSearch" />
+                </v-col>
+            </v-row>
 
-                                <v-divider class="my-4" />
+            <!-- Sector Chart and Deals Table -->
+            <v-row>
+                <!-- Deals Table -->
+                <v-col cols="12" md="9">
+                    <v-card class="deals-table-card">
+                        <v-data-table
+                            class="deals-table"
+                            :headers="tableHeaders"
+                            hide-default-footer
+                            hover
+                            :items="deals"
+                            :items-per-page="-1"
+                            @click:row="handleRowClick">
+                            <template #item.deal="{ item }">
+                                <span class="deal-name">{{ item.deal }}</span>
+                            </template>
 
-                                <div class="bank-details">
-                                    <h4 class="mb-3">Banking Instructions</h4>
-                                    <p class="mb-2">
-                                        Please remit funds to the account listed
-                                        below:
-                                    </p>
-                                    <div class="bank-info">
-                                        <div class="bank-row">
-                                            <span class="bank-label">
-                                                Bank:
-                                            </span>
-                                            <span class="bank-value">
-                                                ABC Bank
-                                            </span>
-                                        </div>
-                                        <div class="bank-row">
-                                            <span class="bank-label">
-                                                Account #:
-                                            </span>
-                                            <span class="bank-value">
-                                                123456789
-                                            </span>
-                                        </div>
-                                        <div class="bank-row">
-                                            <span class="bank-label">
-                                                Routing #:
-                                            </span>
-                                            <span class="bank-value">
-                                                987654321
-                                            </span>
-                                        </div>
+                            <template #item.commitment="{ item }">
+                                <span class="amount-cell">
+                                    {{ formatCurrency(item.commitment) }}
+                                </span>
+                            </template>
+
+                            <template #item.close="{ item }">
+                                <span class="date-cell">{{ item.close }}</span>
+                            </template>
+
+                            <template #item.maturity="{ item }">
+                                <span class="date-cell">
+                                    {{ item.maturity }}
+                                </span>
+                            </template>
+
+                            <template #item.irr="{ item }">
+                                <span class="metric-cell">
+                                    {{ formatPercentage(item.irr) }}
+                                </span>
+                            </template>
+
+                            <template #item.tvpi="{ item }">
+                                <span class="metric-cell">
+                                    {{ item.tvpi.toFixed(1) }}
+                                </span>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </v-col>
+                <!-- Outstanding by Sector Chart -->
+                <v-col cols="12" md="3">
+                    <v-card class="sector-chart-card">
+                        <v-card-title class="chart-title">
+                            Outstanding by Sector
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="sector-bars">
+                                <div
+                                    v-for="sector in sectorData"
+                                    :key="sector.name"
+                                    class="sector-item">
+                                    <div class="sector-name">
+                                        {{ sector.name }}
+                                    </div>
+                                    <div class="sector-bar-container">
+                                        <div
+                                            class="sector-bar"
+                                            :style="{
+                                                width: sector.percentage + '%',
+                                            }" />
                                     </div>
                                 </div>
                             </div>
@@ -290,230 +148,80 @@
                     </v-card>
                 </v-col>
             </v-row>
-
-            <!-- Add/Edit Dialog -->
-            <v-dialog v-model="dialog" max-width="600px">
-                <v-card>
-                    <v-card-title>
-                        <span class="text-h5">
-                            {{ editingIndex === -1 ? 'Add New' : 'Edit' }}
-                            Record
-                        </span>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="formData.date"
-                                        label="Date"
-                                        required
-                                        type="date"
-                                        variant="outlined" />
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.number="formData.amount"
-                                        label="Amount"
-                                        prefix="$"
-                                        required
-                                        type="number"
-                                        variant="outlined" />
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="formData.fund"
-                                        :items="[
-                                            'Fund I',
-                                            'Fund II',
-                                            'Fund III',
-                                        ]"
-                                        label="Fund"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="formData.investorGroup"
-                                        label="Investor Group"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="formData.status"
-                                        :items="[
-                                            'Pending',
-                                            'Completed',
-                                            'In Progress',
-                                        ]"
-                                        label="Status"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-card-text>
-
-                    <v-card-actions>
-                        <v-spacer />
-                        <v-btn color="grey" variant="text" @click="closeDialog">
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            color="primary"
-                            variant="flat"
-                            @click="saveRecord">
-                            Save
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
         </div>
     </Layout>
 </template>
 
 <script lang="ts" setup>
 import Layout from '@/components/ui/layout.vue'
-import { computed, ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // Types
-interface CapitalCall {
-    date: string
-    amount: number
-    fund: string
-    investorGroup: string
-    status: string
-    type: 'forecasted' | 'actual'
+interface Deal {
+    id: number
+    deal: string
+    manager: string
+    sector: string
+    country: string
+    commitment: number
+    close: string
+    maturity: string
+    irr: number
+    tvpi: number
 }
 
-// Tab state
-const activeTab = ref('forecasted')
+interface SectorData {
+    name: string
+    value: number
+    percentage: number
+}
 
-// Dialog state
-const dialog = ref(false)
-const editingIndex = ref(-1)
-const formData = ref<CapitalCall>({
-    date: '',
-    amount: 0,
-    fund: '',
-    investorGroup: '',
-    status: 'Pending',
-    type: 'forecasted',
-})
+// State
+const deals = ref<Deal[]>([])
+const statusFilter = ref('Closed')
+const sectorFilter = ref('All sectors')
+const searchQuery = ref('')
 
-// Table headers
-const headersWithActions = [
-    { title: 'Date', value: 'date', sortable: true },
-    { title: 'Amount', value: 'amount', sortable: true },
-    { title: 'Fund', value: 'fund', sortable: true },
-    { title: 'Investor Group', value: 'investorGroup', sortable: true },
-    { title: 'Status', value: 'status', sortable: true },
-    { title: 'Actions', value: 'actions', sortable: false, width: '100px' },
-]
+// Computed values
+const totalDeals = ref(32)
+const totalOutstanding = ref(84_500_000)
+const totalDefaults = ref(0)
 
-// Capital calls data with type property
-const capitalCalls = ref<CapitalCall[]>([
-    {
-        date: '2024-11-01',
-        amount: 5_000_000,
-        fund: 'Fund I',
-        investorGroup: 'Group A',
-        status: 'Pending',
-        type: 'forecasted',
-    },
-    {
-        date: '2024-11-03',
-        amount: 3_200_000,
-        fund: 'Fund II',
-        investorGroup: 'Group B',
-        status: 'Completed',
-        type: 'forecasted',
-    },
-    {
-        date: '2024-11-10',
-        amount: 4_500_000,
-        fund: 'Fund I',
-        investorGroup: 'Group C',
-        status: 'Pending',
-        type: 'actual',
-    },
+// Sector data for chart
+const sectorData = ref<SectorData[]>([
+    { name: 'Healthcare', value: 30, percentage: 100 },
+    { name: 'Tech', value: 20, percentage: 67 },
+    { name: 'Industrials', value: 15, percentage: 50 },
 ])
 
-// Computed filtered arrays
-const forecastedCalls = computed(() =>
-    capitalCalls.value.filter((call) => call.type === 'forecasted'),
-)
+// Table headers
+const tableHeaders = [
+    { title: 'Deal', value: 'deal', sortable: true },
+    { title: 'Manager', value: 'manager', sortable: true },
+    { title: 'Sector', value: 'sector', sortable: true },
+    { title: 'Country', value: 'country', sortable: true },
+    { title: 'Commitment', value: 'commitment', sortable: true },
+    { title: 'Close', value: 'close', sortable: true },
+    { title: 'Maturity', value: 'maturity', sortable: true },
+    { title: 'IRR', value: 'irr', sortable: true },
+    { title: 'TVPI', value: 'tvpi', sortable: true },
+]
 
-const actualCalls = computed(() =>
-    capitalCalls.value.filter((call) => call.type === 'actual'),
-)
-
-// Dialog functions
-const openAddDialog = () => {
-    editingIndex.value = -1
-    formData.value = {
-        date: '',
-        amount: 0,
-        fund: '',
-        investorGroup: '',
-        status: 'Pending',
-        type: 'forecasted',
+// Load deals data
+onMounted(async () => {
+    try {
+        const response = await fetch('/data/deals.json')
+        const data = await response.json()
+        deals.value = data.deals
+    } catch (error) {
+        console.error('Error loading deals:', error)
     }
-    dialog.value = true
-}
-
-const openEditDialog = (item: CapitalCall) => {
-    const index = capitalCalls.value.findIndex(
-        (call) =>
-            call.date === item.date &&
-            call.amount === item.amount &&
-            call.fund === item.fund &&
-            call.investorGroup === item.investorGroup,
-    )
-    editingIndex.value = index
-    formData.value = { ...item }
-    dialog.value = true
-}
-
-const closeDialog = () => {
-    dialog.value = false
-    editingIndex.value = -1
-    formData.value = {
-        date: '',
-        amount: 0,
-        fund: '',
-        investorGroup: '',
-        status: 'Pending',
-        type: 'forecasted',
-    }
-}
-
-const saveRecord = () => {
-    if (editingIndex.value === -1) {
-        // Add new record
-        capitalCalls.value.push({ ...formData.value })
-    } else {
-        // Edit existing record
-        capitalCalls.value[editingIndex.value] = { ...formData.value }
-    }
-    closeDialog()
-}
+})
 
 // Helper functions
-const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-    })
-}
-
 const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -523,40 +231,30 @@ const formatCurrency = (amount: number) => {
     }).format(amount)
 }
 
-const getFundColor = (fund: string) => {
-    return fund === 'Fund I' ? 'blue' : 'purple'
+const formatLargeCurrency = (amount: number) => {
+    const millions = amount / 1_000_000
+    return `$${millions.toFixed(1)}M`
 }
 
-const getStatusColor = (status: string) => {
-    if (status === 'Completed') {
-        return 'success'
-    }
-    if (status === 'Pending') {
-        return 'warning'
-    }
-    return 'grey'
+const formatPercentage = (value: number) => {
+    return `${value.toFixed(2)}%`
 }
 
-// Action handlers
-const generateNotice = () => {
-    console.log('Generating notice...')
-    // Add notice generation logic here
+// Event handlers
+const handleRowClick = (_event: any, row: any) => {
+    const dealId = row.item.id
+    router.push(`/deal-details/${dealId}`)
 }
 
-const exportPDF = () => {
-    console.log('Exporting PDF...')
-    // Add PDF export logic here
-}
-
-const exportExcel = () => {
-    console.log('Exporting Excel...')
-    // Add Excel export logic here
+const handleSearch = () => {
+    console.log('Searching for:', searchQuery.value)
+    // Implement search logic here
 }
 </script>
 
 <style scoped>
-.capital-calls {
-    max-width: 1400px;
+.closed-deals {
+    max-width: 1600px;
     margin: 0 auto;
 }
 
@@ -571,102 +269,93 @@ const exportExcel = () => {
     margin-bottom: 0.5rem;
 }
 
-.date-range-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.action-buttons {
-    display: flex;
-    align-items: center;
-}
-
-.capital-calls-table,
-.notice-preview {
+/* Stats Cards */
+.stats-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: fit-content;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%;
 }
 
-.table-header,
-.notice-header {
-    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.notice-preview {
-    position: sticky;
-    top: 24px;
-}
-
-.notice-content {
+.stats-card .v-card-text {
     padding: 1.5rem;
 }
 
-.notice-title h3 {
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.detail-label {
+.stats-label {
+    font-size: 0.875rem;
     color: #666;
+    margin-bottom: 0.5rem;
     font-weight: 500;
 }
 
-.detail-value {
+.stats-value {
+    font-size: 2rem;
+    font-weight: 700;
     color: #333;
-    text-align: right;
 }
 
-.bank-details h4 {
-    color: #333;
-    font-weight: 600;
-    font-size: 1.1rem;
+.stats-currency {
+    color: #d4a574;
 }
 
-.bank-details p {
-    color: #666;
-    line-height: 1.5;
-}
-
-.bank-info {
-    background: #f8f9fa;
-    padding: 1rem;
+/* Sector Chart Card */
+.sector-chart-card {
+    background: white;
     border-radius: 8px;
-    margin-top: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%;
 }
 
-.bank-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+.chart-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    padding: 1.5rem 1.5rem 1rem;
 }
 
-.bank-row:last-child {
+.sector-bars {
+    padding: 1rem 0;
+}
+
+.sector-item {
+    margin-bottom: 2rem;
+}
+
+.sector-item:last-child {
     margin-bottom: 0;
 }
 
-.bank-label {
+.sector-name {
+    font-size: 0.875rem;
     color: #666;
-    font-weight: 500;
+    margin-bottom: 0.5rem;
 }
 
-.bank-value {
-    color: #333;
-    font-family: 'Courier New', monospace;
+.sector-bar-container {
+    width: 100%;
+    height: 32px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-/* Table styling */
+.sector-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
+    transition: width 0.3s ease;
+}
+
+/* Deals Table Card */
+.deals-table-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.deals-table {
+    background: transparent;
+}
+
 :deep(.v-data-table) {
     background: transparent;
 }
@@ -678,21 +367,49 @@ const exportExcel = () => {
 :deep(.v-data-table-header th) {
     font-weight: 600 !important;
     color: #333 !important;
+    font-size: 0.875rem !important;
+    padding: 1rem 0.75rem !important;
 }
 
-.date-cell {
-    font-weight: 500;
+:deep(.v-data-table__td) {
+    padding: 0.75rem !important;
+}
+
+:deep(.v-data-table__tr:hover) {
+    background-color: #f8f9fa !important;
+    cursor: pointer;
+}
+
+.deal-name {
+    font-weight: 600;
     color: #333;
 }
 
 .amount-cell {
-    font-weight: 600;
+    font-weight: 500;
     color: #333;
     font-family: 'Roboto Mono', monospace;
 }
 
-.investor-group-cell {
+.date-cell {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.metric-cell {
+    font-weight: 500;
     color: #333;
+}
+
+/* Filter inputs */
+:deep(.v-select),
+:deep(.v-text-field) {
+    background: white;
+}
+
+:deep(.v-field) {
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive design */
@@ -703,16 +420,12 @@ const exportExcel = () => {
         gap: 1rem;
     }
 
-    .action-buttons {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+    .stats-value {
+        font-size: 1.5rem;
     }
 
-    .notice-preview {
-        position: static;
-        margin-top: 1rem;
+    .sector-chart-card {
+        margin-bottom: 1rem;
     }
 }
 </style>
