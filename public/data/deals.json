@@ -18,7 +18,8 @@
                     "amount": 373000,
                     "description": "Refund at Capital",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 2,
@@ -26,7 +27,44 @@
                     "amount": 200000,
                     "description": "Period 200",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 101,
+                    "date": "2024-01-15",
+                    "amount": 450000,
+                    "description": "Q1 Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 102,
+                    "date": "2024-04-10",
+                    "amount": 380000,
+                    "description": "Q2 Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 103,
+                    "date": "2024-07-20",
+                    "amount": 290000,
+                    "description": "Mid-Year Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 104,
+                    "date": "2024-10-15",
+                    "amount": 420000,
+                    "description": "Q4 Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -48,7 +86,8 @@
                     "amount": 211000,
                     "description": "Gross IBBR",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 4,
@@ -56,7 +95,44 @@
                     "amount": 175000,
                     "description": "GRANT",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 201,
+                    "date": "2024-02-20",
+                    "amount": 250000,
+                    "description": "Expansion Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 202,
+                    "date": "2024-05-15",
+                    "amount": 180000,
+                    "description": "Spring Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 203,
+                    "date": "2024-08-10",
+                    "amount": 320000,
+                    "description": "Follow-on Investment",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 204,
+                    "date": "2024-11-25",
+                    "amount": 195000,
+                    "description": "Year-End Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -78,7 +154,8 @@
                     "amount": 280000,
                     "description": "Initial Capital Call",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 6,
@@ -86,7 +163,35 @@
                     "amount": 150000,
                     "description": "Follow-on Investment",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 301,
+                    "date": "2024-03-01",
+                    "amount": 350000,
+                    "description": "Growth Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 302,
+                    "date": "2024-06-15",
+                    "amount": 275000,
+                    "description": "Additional Funding",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 303,
+                    "date": "2024-09-20",
+                    "amount": 165000,
+                    "description": "Quarterly Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -108,7 +213,8 @@
                     "amount": 328000,
                     "description": "Initial Funding",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 8,
@@ -116,7 +222,44 @@
                     "amount": 220000,
                     "description": "Quarterly Distribution",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 401,
+                    "date": "2024-01-25",
+                    "amount": 410000,
+                    "description": "Strategic Investment Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 402,
+                    "date": "2024-05-10",
+                    "amount": 190000,
+                    "description": "Spring Return",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 403,
+                    "date": "2024-07-30",
+                    "amount": 365000,
+                    "description": "Summer Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 404,
+                    "date": "2024-12-15",
+                    "amount": 245000,
+                    "description": "Annual Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -138,7 +281,8 @@
                     "amount": 420000,
                     "description": "First Close Capital",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 10,
@@ -146,7 +290,44 @@
                     "amount": 315000,
                     "description": "Interim Distribution",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 501,
+                    "date": "2024-02-15",
+                    "amount": 525000,
+                    "description": "Major Investment Round",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 502,
+                    "date": "2024-04-20",
+                    "amount": 385000,
+                    "description": "Q2 Funding Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 503,
+                    "date": "2024-08-05",
+                    "amount": 295000,
+                    "description": "Portfolio Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 504,
+                    "date": "2024-11-10",
+                    "amount": 465000,
+                    "description": "Year-End Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -168,7 +349,8 @@
                     "amount": 400000,
                     "description": "Capital Commitment",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 12,
@@ -176,7 +358,44 @@
                     "amount": 275000,
                     "description": "Year-end Distribution",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 601,
+                    "date": "2024-01-20",
+                    "amount": 485000,
+                    "description": "Q1 Investment Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 602,
+                    "date": "2024-03-30",
+                    "amount": 340000,
+                    "description": "Follow-on Capital",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 603,
+                    "date": "2024-06-25",
+                    "amount": 225000,
+                    "description": "Mid-Year Returns",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 604,
+                    "date": "2024-09-15",
+                    "amount": 395000,
+                    "description": "Autumn Capital Call",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         },
@@ -198,7 +417,8 @@
                     "amount": 430000,
                     "description": "Series A Funding",
                     "type": "Capital Call",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
                 },
                 {
                     "id": 14,
@@ -206,7 +426,44 @@
                     "amount": 185000,
                     "description": "Dividend Payment",
                     "type": "Distribution",
-                    "status": "Completed"
+                    "status": "Completed",
+                    "activityType": "actual"
+                },
+                {
+                    "id": 701,
+                    "date": "2024-02-10",
+                    "amount": 510000,
+                    "description": "Series B Funding",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 702,
+                    "date": "2024-05-25",
+                    "amount": 375000,
+                    "description": "Growth Investment",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 703,
+                    "date": "2024-08-15",
+                    "amount": 210000,
+                    "description": "Summer Distribution",
+                    "type": "Distribution",
+                    "status": "Pending",
+                    "activityType": "forecasted"
+                },
+                {
+                    "id": 704,
+                    "date": "2024-11-30",
+                    "amount": 445000,
+                    "description": "Final Round Capital",
+                    "type": "Capital Call",
+                    "status": "Pending",
+                    "activityType": "forecasted"
                 }
             ]
         }

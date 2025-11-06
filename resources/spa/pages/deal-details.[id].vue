@@ -4,7 +4,7 @@
             <!-- Back Button -->
             <v-btn class="mb-4" color="primary" variant="text" @click="goBack">
                 <v-icon start>mdi-arrow-left</v-icon>
-                Back to Closed Deals
+                Back to Active Deals
             </v-btn>
 
             <!-- Header Section -->
@@ -379,7 +379,14 @@
             </v-row>
 
             <!-- Add/Edit Dialog -->
-            <v-dialog v-model="dialog" max-width="600px">
+            <v-dialog
+                v-model="dialog"
+                :max-width="
+                    formData.activityType === 'forecasted' &&
+                    editingIndex !== -1
+                        ? '900px'
+                        : '600px'
+                ">
                 <v-card>
                     <v-card-title>
                         <span class="text-h5">
@@ -391,61 +398,201 @@
                     <v-card-text>
                         <v-container>
                             <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="formData.date"
-                                        label="Date"
-                                        required
-                                        type="date"
-                                        variant="outlined" />
+                                <!-- Left Column - Form Fields -->
+                                <v-col
+                                    :cols="
+                                        formData.activityType ===
+                                            'forecasted' && editingIndex !== -1
+                                            ? 6
+                                            : 12
+                                    ">
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                v-model="formData.date"
+                                                label="Date"
+                                                required
+                                                type="date"
+                                                variant="outlined" />
+                                        </v-col>
+
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                v-model.number="formData.amount"
+                                                label="Amount"
+                                                prefix="$"
+                                                required
+                                                type="number"
+                                                variant="outlined" />
+                                        </v-col>
+
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                v-model="formData.description"
+                                                label="Description"
+                                                required
+                                                variant="outlined" />
+                                        </v-col>
+
+                                        <v-col cols="12">
+                                            <v-select
+                                                v-model="formData.type"
+                                                :items="[
+                                                    'Capital Call',
+                                                    'Distribution',
+                                                ]"
+                                                label="Type"
+                                                required
+                                                variant="outlined" />
+                                        </v-col>
+
+                                        <v-col cols="12">
+                                            <v-select
+                                                v-model="formData.status"
+                                                :items="[
+                                                    'Pending',
+                                                    'Completed',
+                                                ]"
+                                                label="Status"
+                                                required
+                                                variant="outlined" />
+                                        </v-col>
+                                    </v-row>
                                 </v-col>
 
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.number="formData.amount"
-                                        label="Amount"
-                                        prefix="$"
-                                        required
-                                        type="number"
-                                        variant="outlined" />
-                                </v-col>
+                                <!-- Right Column - Workflow Checklist (only for forecasted edits) -->
+                                <v-col
+                                    v-if="
+                                        formData.activityType ===
+                                            'forecasted' && editingIndex !== -1
+                                    "
+                                    cols="6">
+                                    <div class="workflow-checklist">
+                                        <h3 class="checklist-title mb-4">
+                                            Review Workflow
+                                        </h3>
 
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="formData.description"
-                                        label="Description"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
+                                        <v-list>
+                                            <!-- Initial Review Complete -->
+                                            <v-list-item class="px-0">
+                                                <template #prepend>
+                                                    <v-checkbox
+                                                        v-model="
+                                                            workflowChecklist.initialReview
+                                                        "
+                                                        color="primary"
+                                                        hide-details />
+                                                </template>
+                                                <v-list-item-title
+                                                    class="font-weight-medium">
+                                                    Initial Review Complete
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    Preliminary review and
+                                                    validation of capital call
+                                                    details
+                                                </v-list-item-subtitle>
+                                            </v-list-item>
 
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="formData.type"
-                                        :items="[
-                                            'Capital Call',
-                                            'Distribution',
-                                        ]"
-                                        label="Type"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
+                                            <v-divider class="my-2" />
 
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="formData.status"
-                                        :items="['Pending', 'Completed']"
-                                        label="Status"
-                                        required
-                                        variant="outlined" />
-                                </v-col>
+                                            <!-- Second Review -->
+                                            <v-list-item
+                                                class="px-0"
+                                                :disabled="
+                                                    !isSecondReviewEnabled
+                                                ">
+                                                <template #prepend>
+                                                    <v-checkbox
+                                                        v-model="
+                                                            workflowChecklist.secondReview
+                                                        "
+                                                        color="primary"
+                                                        :disabled="
+                                                            !isSecondReviewEnabled
+                                                        "
+                                                        hide-details />
+                                                </template>
+                                                <v-list-item-title
+                                                    class="font-weight-medium">
+                                                    Second Review
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    Secondary verification and
+                                                    cross-check of all
+                                                    information
+                                                </v-list-item-subtitle>
+                                            </v-list-item>
 
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="formData.activityType"
-                                        :items="['forecasted', 'actual']"
-                                        label="Activity Type"
-                                        required
-                                        variant="outlined" />
+                                            <v-divider class="my-2" />
+
+                                            <!-- Deal Team Approval -->
+                                            <v-list-item
+                                                class="px-0"
+                                                :disabled="
+                                                    !isDealTeamApprovalEnabled
+                                                ">
+                                                <template #prepend>
+                                                    <v-checkbox
+                                                        v-model="
+                                                            workflowChecklist.dealTeamApproval
+                                                        "
+                                                        color="primary"
+                                                        :disabled="
+                                                            !isDealTeamApprovalEnabled
+                                                        "
+                                                        hide-details />
+                                                </template>
+                                                <v-list-item-title
+                                                    class="font-weight-medium">
+                                                    Deal Team Approval
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    Final approval from deal
+                                                    team before execution
+                                                </v-list-item-subtitle>
+                                            </v-list-item>
+
+                                            <v-divider class="my-2" />
+
+                                            <!-- Executed -->
+                                            <v-list-item
+                                                class="px-0"
+                                                :disabled="!isExecutedEnabled">
+                                                <template #prepend>
+                                                    <v-checkbox
+                                                        v-model="
+                                                            workflowChecklist.executed
+                                                        "
+                                                        color="primary"
+                                                        :disabled="
+                                                            !isExecutedEnabled
+                                                        "
+                                                        hide-details />
+                                                </template>
+                                                <v-list-item-title
+                                                    class="font-weight-medium">
+                                                    Executed
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    Capital call has been
+                                                    executed and processed
+                                                </v-list-item-subtitle>
+                                            </v-list-item>
+                                        </v-list>
+
+                                        <v-alert
+                                            v-if="allChecklistComplete"
+                                            class="mt-4"
+                                            color="success"
+                                            density="compact"
+                                            type="success"
+                                            variant="tonal">
+                                            All reviews complete. This record
+                                            will be moved to "Actual Activity"
+                                            when saved.
+                                        </v-alert>
+                                    </div>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -528,6 +675,14 @@ const formData = ref<CapitalCall>({
     activityType: 'forecasted',
 })
 
+// Workflow checklist state
+const workflowChecklist = ref({
+    initialReview: false,
+    secondReview: false,
+    dealTeamApproval: false,
+    executed: false,
+})
+
 // Capital Call Table Headers
 const capitalCallHeaders = [
     { title: 'Date', value: 'date', sortable: true },
@@ -538,7 +693,30 @@ const capitalCallHeaders = [
     { title: 'Actions', value: 'actions', sortable: false, width: '100px' },
 ]
 
-// Computed Values
+// Computed Values - Workflow checklist enablement
+const isSecondReviewEnabled = computed(
+    () => workflowChecklist.value.initialReview,
+)
+const isDealTeamApprovalEnabled = computed(
+    () =>
+        workflowChecklist.value.initialReview &&
+        workflowChecklist.value.secondReview,
+)
+const isExecutedEnabled = computed(
+    () =>
+        workflowChecklist.value.initialReview &&
+        workflowChecklist.value.secondReview &&
+        workflowChecklist.value.dealTeamApproval,
+)
+const allChecklistComplete = computed(() => {
+    return (
+        workflowChecklist.value.initialReview &&
+        workflowChecklist.value.secondReview &&
+        workflowChecklist.value.dealTeamApproval &&
+        workflowChecklist.value.executed
+    )
+})
+
 const forecastedCalls = computed(() => {
     return capitalCalls.value.filter(
         (call) => call.activityType === 'forecasted',
@@ -617,6 +795,13 @@ const openAddDialog = () => {
         status: 'Pending',
         activityType: capitalCallTab.value as 'forecasted' | 'actual',
     }
+    // Reset workflow checklist
+    workflowChecklist.value = {
+        initialReview: false,
+        secondReview: false,
+        dealTeamApproval: false,
+        executed: false,
+    }
     dialog.value = true
 }
 
@@ -630,6 +815,15 @@ const openEditDialog = (item: CapitalCall) => {
     )
     editingIndex.value = index
     formData.value = { ...item }
+    // Reset workflow checklist for forecasted items
+    if (item.activityType === 'forecasted') {
+        workflowChecklist.value = {
+            initialReview: false,
+            secondReview: false,
+            dealTeamApproval: false,
+            executed: false,
+        }
+    }
     dialog.value = true
 }
 
@@ -645,9 +839,23 @@ const closeDialog = () => {
         status: 'Pending',
         activityType: 'forecasted',
     }
+    workflowChecklist.value = {
+        initialReview: false,
+        secondReview: false,
+        dealTeamApproval: false,
+        executed: false,
+    }
 }
 
 const saveRecord = () => {
+    // If editing a forecasted capital call and all checklist items are complete, change to actual
+    if (
+        formData.value.activityType === 'forecasted' &&
+        allChecklistComplete.value
+    ) {
+        formData.value.activityType = 'actual'
+    }
+
     if (editingIndex.value === -1) {
         // Add new record
         capitalCalls.value.push({ ...formData.value })
@@ -885,5 +1093,33 @@ const goBack = () => {
     .metric-value {
         font-size: 2rem;
     }
+}
+
+/* Workflow Checklist Styles */
+.workflow-checklist {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.checklist-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #333;
+}
+
+:deep(.v-list-item--disabled) {
+    opacity: 0.5;
+}
+
+:deep(.v-list-item-title) {
+    margin-bottom: 4px;
+}
+
+:deep(.v-list-item-subtitle) {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    white-space: normal;
 }
 </style>
