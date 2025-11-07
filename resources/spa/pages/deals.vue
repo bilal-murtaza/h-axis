@@ -312,6 +312,8 @@
                                         :class="{
                                             'clickable-checklist':
                                                 isCheckboxEnabled(index),
+                                            'disabled-checklist':
+                                                !isCheckboxEnabled(index),
                                         }"
                                         @click="
                                             toggleChecklistItem(item.id, index)
@@ -757,11 +759,18 @@ const getCurrentStageTitle = () => {
 
 // Check if a checkbox should be enabled (only if previous one is checked)
 const isCheckboxEnabled = (index: number) => {
+    // First checkbox is always enabled
     if (index === 0) return true
 
+    // For other checkboxes, check if the previous one is checked
     const checklist = getCurrentChecklist()
-    const previousItem = checklist[index - 1]
-    return editingDeal.value.checklist[previousItem.id] === true
+    if (index > 0) {
+        const previousItem = checklist[index - 1]
+        // Previous checkbox must be explicitly checked (true)
+        return editingDeal.value.checklist?.[previousItem.id] === true
+    }
+
+    return false
 }
 
 // Check if all checklist items are completed
@@ -1182,6 +1191,19 @@ const onDrop = (event: DragEvent, toStageId: string) => {
 
 .clickable-checklist:hover {
     background-color: rgba(25, 118, 210, 0.04);
+}
+
+.disabled-checklist {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.disabled-checklist .v-list-item-title {
+    color: #999 !important;
+}
+
+.disabled-checklist .v-list-item-subtitle {
+    color: #bbb !important;
 }
 
 /* Responsive adjustments */
