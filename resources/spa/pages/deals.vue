@@ -246,51 +246,100 @@
         </v-dialog>
 
         <!-- Edit Deal Dialog -->
-        <v-dialog v-model="showEditDealDialog" max-width="600px">
+        <v-dialog v-model="showEditDealDialog" max-width="1000px">
             <v-card>
                 <v-card-title class="text-h5 pa-6">Edit Deal</v-card-title>
 
                 <v-card-text class="pa-6">
-                    <v-form ref="editDealForm">
-                        <v-text-field
-                            v-model="editingDeal.title"
-                            class="mb-4"
-                            label="Deal Title"
-                            placeholder="e.g., Borrower 1-4"
-                            :rules="[rules.required]"
-                            variant="outlined" />
+                    <v-row>
+                        <!-- Left Column - Deal Information -->
+                        <v-col cols="6">
+                            <v-form ref="editDealForm">
+                                <v-text-field
+                                    v-model="editingDeal.title"
+                                    class="mb-4"
+                                    label="Deal Title"
+                                    placeholder="e.g., Borrower 1-4"
+                                    :rules="[rules.required]"
+                                    variant="outlined" />
 
-                        <v-text-field
-                            v-model="editingDeal.sector"
-                            class="mb-4"
-                            label="Sector/Region"
-                            placeholder="e.g., North America"
-                            :rules="[rules.required]"
-                            variant="outlined" />
+                                <v-text-field
+                                    v-model="editingDeal.sector"
+                                    class="mb-4"
+                                    label="Sector/Region"
+                                    placeholder="e.g., North America"
+                                    :rules="[rules.required]"
+                                    variant="outlined" />
 
-                        <v-text-field
-                            v-model="editingDeal.size"
-                            class="mb-4"
-                            label="Deal Size"
-                            placeholder="e.g., $85M"
-                            :rules="[rules.required]"
-                            variant="outlined" />
+                                <v-text-field
+                                    v-model="editingDeal.size"
+                                    class="mb-4"
+                                    label="Deal Size"
+                                    placeholder="e.g., $85M"
+                                    :rules="[rules.required]"
+                                    variant="outlined" />
 
-                        <v-text-field
-                            v-model="editingDeal.yield"
-                            class="mb-4"
-                            label="Yield"
-                            placeholder="e.g., 9.2%"
-                            :rules="[rules.required]"
-                            variant="outlined" />
+                                <v-text-field
+                                    v-model="editingDeal.yield"
+                                    class="mb-4"
+                                    label="Yield"
+                                    placeholder="e.g., 9.2%"
+                                    :rules="[rules.required]"
+                                    variant="outlined" />
 
-                        <v-text-field
-                            v-model="editingDeal.expectedClose"
-                            label="Expected Close Date"
-                            placeholder="e.g., Nov 15"
-                            :rules="[rules.required]"
-                            variant="outlined" />
-                    </v-form>
+                                <v-text-field
+                                    v-model="editingDeal.expectedClose"
+                                    label="Expected Close Date"
+                                    placeholder="e.g., Nov 15"
+                                    :rules="[rules.required]"
+                                    variant="outlined" />
+                            </v-form>
+                        </v-col>
+
+                        <!-- Right Column - Stage Checklist -->
+                        <v-col cols="6">
+                            <div class="checklist-section">
+                                <h3 class="text-h6 mb-4">
+                                    {{ getCurrentStageTitle() }} Checklist
+                                </h3>
+                                <v-list>
+                                    <v-list-item
+                                        v-for="(
+                                            item, index
+                                        ) in getCurrentChecklist()"
+                                        :key="item.id"
+                                        class="px-0"
+                                        :class="{
+                                            'clickable-checklist':
+                                                isCheckboxEnabled(index),
+                                        }"
+                                        @click="
+                                            toggleChecklistItem(item.id, index)
+                                        ">
+                                        <template #prepend>
+                                            <v-checkbox
+                                                v-model="
+                                                    editingDeal.checklist![
+                                                        item.id
+                                                    ]
+                                                "
+                                                :disabled="
+                                                    !isCheckboxEnabled(index)
+                                                "
+                                                hide-details
+                                                readonly />
+                                        </template>
+                                        <v-list-item-title>
+                                            {{ item.label }}
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            {{ item.description }}
+                                        </v-list-item-subtitle>
+                                    </v-list-item>
+                                </v-list>
+                            </div>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
 
                 <v-card-actions class="pa-6 pt-0">
@@ -328,6 +377,7 @@ interface Deal {
     yield: string
     expectedClose: string
     stage: string
+    checklist?: Record<string, boolean>
 }
 
 interface Stage {
@@ -336,10 +386,108 @@ interface Stage {
     deals: Deal[]
 }
 
+interface ChecklistItem {
+    id: string
+    label: string
+    description: string
+}
+
 // State for drag and drop
 const draggedDeal = ref<Deal | null>(null)
 const draggedFromStage = ref<string | null>(null)
 const dragOverStage = ref<string | null>(null)
+
+// Stage checklists
+const stageChecklists: Record<string, ChecklistItem[]> = {
+    origination: [
+        {
+            id: 'intake_form',
+            label: 'Deal intake form completed',
+            description: 'All required borrower information captured',
+        },
+        {
+            id: 'initial_materials',
+            label: 'Initial borrower materials received',
+            description: 'Financial statements and supporting documents',
+        },
+        {
+            id: 'assign_team',
+            label: 'Assign internal owner / deal team',
+            description: 'Designate responsible team members',
+        },
+        {
+            id: 'return_model',
+            label: 'Preliminary return model created',
+            description: 'Initial financial projections and analysis',
+        },
+    ],
+    'under-review': [
+        {
+            id: 'data_room',
+            label: 'Borrower data room established',
+            description: 'Secure repository for all deal documents',
+        },
+        {
+            id: 'credit_diligence',
+            label: 'Credit diligence completed',
+            description: 'Thorough credit risk assessment performed',
+        },
+        {
+            id: 'cash_flow',
+            label: 'Cash flow model finalized',
+            description: 'Detailed financial projections completed',
+        },
+        {
+            id: 'third_party',
+            label: 'Third party reports ordered',
+            description: 'Appraisals and external assessments requested',
+        },
+    ],
+    approved: [
+        {
+            id: 'final_docs',
+            label: 'Final documents prepared',
+            description: 'All legal agreements drafted and reviewed',
+        },
+        {
+            id: 'closing_checklist',
+            label: 'Closing checklist generated',
+            description: 'Complete list of closing requirements',
+        },
+        {
+            id: 'legal_review',
+            label: 'Legal counsel review complete',
+            description: 'All documents approved by legal team',
+        },
+        {
+            id: 'system_setup',
+            label: 'Internal system setup',
+            description: 'Loan servicing and tracking systems configured',
+        },
+    ],
+    executed: [
+        {
+            id: 'funding',
+            label: 'Funding confirmation',
+            description: 'Funds disbursed and confirmed received',
+        },
+        {
+            id: 'docs_archived',
+            label: 'Final documentation archived',
+            description: 'All signed documents properly stored',
+        },
+        {
+            id: 'post_close',
+            label: 'Post-close checklist completed',
+            description: 'All post-closing tasks verified',
+        },
+        {
+            id: 'accrual_schedule',
+            label: 'Accrual schedule loaded',
+            description: 'Payment schedule entered in systems',
+        },
+    ],
+}
 
 // State for add deal dialog
 const showAddDealDialog = ref(false)
@@ -355,7 +503,16 @@ const newDeal = ref({
 // State for edit deal dialog
 const showEditDealDialog = ref(false)
 const editDealForm = ref<any>(null)
-const editingDeal = ref({
+const editingDeal = ref<{
+    id: string
+    title: string
+    sector: string
+    size: string
+    yield: string
+    expectedClose: string
+    stage: string
+    checklist: Record<string, boolean>
+}>({
     id: '',
     title: '',
     sector: '',
@@ -363,6 +520,7 @@ const editingDeal = ref({
     yield: '',
     expectedClose: '',
     stage: '',
+    checklist: {},
 })
 const editingDealStageId = ref<string | null>(null)
 
@@ -565,6 +723,11 @@ const saveDeal = async () => {
 
 // Edit Deal Dialog Functions
 const openEditDealDialog = (deal: Deal, stageId: string) => {
+    // Initialize checklist if it doesn't exist
+    if (!deal.checklist) {
+        deal.checklist = {}
+    }
+
     editingDeal.value = {
         id: deal.id,
         title: deal.title,
@@ -573,9 +736,59 @@ const openEditDealDialog = (deal: Deal, stageId: string) => {
         yield: deal.yield,
         expectedClose: deal.expectedClose,
         stage: deal.stage,
+        checklist: { ...deal.checklist },
     }
     editingDealStageId.value = stageId
     showEditDealDialog.value = true
+}
+
+// Get current stage checklist items
+const getCurrentChecklist = () => {
+    if (!editingDealStageId.value) return []
+    return stageChecklists[editingDealStageId.value] || []
+}
+
+// Get current stage title
+const getCurrentStageTitle = () => {
+    if (!editingDealStageId.value) return ''
+    const stage = stages.value.find((s) => s.id === editingDealStageId.value)
+    return stage?.title || ''
+}
+
+// Check if a checkbox should be enabled (only if previous one is checked)
+const isCheckboxEnabled = (index: number) => {
+    if (index === 0) return true
+
+    const checklist = getCurrentChecklist()
+    const previousItem = checklist[index - 1]
+    return editingDeal.value.checklist[previousItem.id] === true
+}
+
+// Check if all checklist items are completed
+const isChecklistComplete = () => {
+    const checklist = getCurrentChecklist()
+    return checklist.every(
+        (item) => editingDeal.value.checklist[item.id] === true,
+    )
+}
+
+// Get next stage ID
+const getNextStageId = (currentStageId: string): string | null => {
+    const stageOrder = ['origination', 'under-review', 'approved', 'executed']
+    const currentIndex = stageOrder.indexOf(currentStageId)
+    if (currentIndex === -1 || currentIndex === stageOrder.length - 1) {
+        return null
+    }
+    return stageOrder[currentIndex + 1]
+}
+
+// Toggle checklist item when label is clicked
+const toggleChecklistItem = (itemId: string, index: number) => {
+    // Only toggle if the checkbox is enabled
+    if (isCheckboxEnabled(index)) {
+        editingDeal.value.checklist[itemId] =
+            !editingDeal.value.checklist[itemId]
+    }
 }
 
 const closeEditDealDialog = () => {
@@ -593,6 +806,7 @@ const resetEditingDeal = () => {
         yield: '',
         expectedClose: '',
         stage: '',
+        checklist: {},
     }
 }
 
@@ -609,20 +823,51 @@ const updateDeal = async () => {
     const stage = stages.value.find((s) => s.id === editingDealStageId.value)
     if (!stage) return
 
-    // Find and update the deal
+    // Find the deal
     const dealIndex = stage.deals.findIndex(
         (d) => d.id === editingDeal.value.id,
     )
-    if (dealIndex !== -1) {
-        stage.deals[dealIndex] = {
-            id: editingDeal.value.id,
-            title: editingDeal.value.title,
-            sector: editingDeal.value.sector,
-            size: editingDeal.value.size,
-            yield: editingDeal.value.yield,
-            expectedClose: editingDeal.value.expectedClose,
-            stage: editingDeal.value.stage,
+    if (dealIndex === -1) return
+
+    // Check if checklist is complete and should advance to next stage
+    let targetStage = stage
+
+    if (isChecklistComplete()) {
+        const nextStageId = getNextStageId(editingDealStageId.value)
+        if (nextStageId) {
+            const nextStage = stages.value.find((s) => s.id === nextStageId)
+            if (nextStage) {
+                targetStage = nextStage
+                // Remove deal from current stage
+                const [movedDeal] = stage.deals.splice(dealIndex, 1)
+                // Reset checklist for new stage
+                movedDeal.checklist = {}
+                movedDeal.stage = nextStage.title
+                // Update with new values
+                movedDeal.title = editingDeal.value.title
+                movedDeal.sector = editingDeal.value.sector
+                movedDeal.size = editingDeal.value.size
+                movedDeal.yield = editingDeal.value.yield
+                movedDeal.expectedClose = editingDeal.value.expectedClose
+                // Add to next stage
+                nextStage.deals.push(movedDeal)
+                // Close dialog and reset form
+                closeEditDealDialog()
+                return
+            }
         }
+    }
+
+    // Update the deal in the same stage
+    targetStage.deals[dealIndex] = {
+        id: editingDeal.value.id,
+        title: editingDeal.value.title,
+        sector: editingDeal.value.sector,
+        size: editingDeal.value.size,
+        yield: editingDeal.value.yield,
+        expectedClose: editingDeal.value.expectedClose,
+        stage: targetStage.title,
+        checklist: { ...editingDeal.value.checklist },
     }
 
     // Close dialog and reset form
@@ -717,6 +962,9 @@ const onDrop = (event: DragEvent, toStageId: string) => {
 
         // Update the deal's stage property to match the new stage title
         movedDeal.stage = toStage.title
+
+        // Reset checklist for new stage
+        movedDeal.checklist = {}
 
         // Add the deal to the target stage
         toStage.deals.push(movedDeal)
@@ -892,6 +1140,48 @@ const onDrop = (event: DragEvent, toStageId: string) => {
 
 .stage-column:nth-child(4) .stage-header {
     background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+/* Checklist Section */
+.checklist-section {
+    background: #f5f7fa;
+    padding: 20px;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.checklist-section h3 {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.checklist-section .v-list-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 0;
+}
+
+.checklist-section .v-list-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-section .v-list-item-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.checklist-section .v-list-item-subtitle {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.clickable-checklist {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-checklist:hover {
+    background-color: rgba(25, 118, 210, 0.04);
 }
 
 /* Responsive adjustments */
